@@ -13,7 +13,7 @@ export function AddProduct({ dismissModal }: {
     // console.log('Submitting product!');
     firestore()
       .collection(PRODUCTS_COLLECTION)
-      .add({ name, price })
+      .add({ name, price, createdAt: new Date(), updatedAt: new Date() })
       .then(() => {
         // console.log('Product added!');
         dismissModal();
