@@ -17,7 +17,7 @@ function App(): React.JSX.Element {
   return (
     <PaperProvider>
       <NavigationContainer>
-        <Stack.Navigator screenOptions={{ headerShown: false }} initialRouteName="Root">
+        <Stack.Navigator screenOptions={{ headerShown: false }}>
           <Stack.Screen name="Root" component={RootLayout} />
           <Stack.Screen name="Login" component={LoginScreen} />
           <Stack.Screen name="Register" component={RegisterScreen} />

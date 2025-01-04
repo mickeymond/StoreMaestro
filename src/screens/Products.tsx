@@ -31,63 +31,61 @@ export function ProductsScreen() {
   }, [debouncedQuery]);
 
   return (
-    <Surface
-      style={{ marginBottom: 150, minHeight: '100%' }}
-      elevation={0}>
-      <Searchbar
-        style={{ margin: 10 }}
-        placeholder="Enter a product name to search for it!"
-        onChangeText={setQuery}
-        value={query}
-      />
-      <FlatList
-        data={products}
-        ListEmptyComponent={<Empty />}
-        renderItem={({ item }) => (
-          <Card style={{ margin: 10 }}>
-            <Card.Title
-              title={item.name}
-              subtitle={`GHS ${item.price}`}
-              left={(props) => (
-                <Avatar.Image
-                  {...props}
-                  source={{ uri: `https://avatar.iran.liara.run/username?username=${item.name}` }}
-                />
-              )}
-              right={props => (
-                <Button
-                  {...props}
-                  onPress={() => {
-                    setProductToEdit(item);
-                    setIsModalOpen(true);
-                  }}>Update</Button>
-              )}
-            />
-          </Card>
-        )}
-        keyExtractor={item => item.id}
-      />
+    <>
+      <Surface
+        style={{ marginBottom: 150, minHeight: '100%' }}
+        elevation={0}>
+        <Searchbar
+          style={{ margin: 10 }}
+          placeholder="Enter a product name to search for it!"
+          onChangeText={setQuery}
+          value={query} />
+        <FlatList
+          data={products}
+          ListEmptyComponent={<Empty />}
+          style={{ flexGrow: 1, flex: 1, marginBottom: 60 }}
+          renderItem={({ item }) => (
+            <Card style={{ margin: 10 }}>
+              <Card.Title
+                title={item.name}
+                subtitle={`GHS ${item.price}`}
+                left={(props) => (
+                  <Avatar.Image
+                    {...props}
+                    source={{ uri: `https://avatar.iran.liara.run/username?username=${item.name}` }} />
+                )}
+                right={props => (
+                  <Button
+                    {...props}
+                    onPress={() => {
+                      setProductToEdit(item);
+                      setIsModalOpen(true);
+                    }}>Update</Button>
+                )} />
+            </Card>
+          )}
+          keyExtractor={item => item.id} />
+        <Portal>
+          <Modal
+            visible={isModalOpen}
+            dismissable={false}
+            contentContainerStyle={{ backgroundColor: 'white', marginHorizontal: 10, borderRadius: 10 }}>
+            {!productToEdit ?
+              <AddProduct
+                dismissModal={() => setIsModalOpen(false)} /> :
+              <EditProduct
+                product={productToEdit}
+                dismissModal={() => {
+                  setIsModalOpen(false);
+                  setProductToEdit(null);
+                }} />}
+          </Modal>
+        </Portal>
+      </Surface>
       <FAB
         icon="plus"
         style={{ position: 'absolute', bottom: 10, right: 10 }}
-        onPress={() => setIsModalOpen(true)}
-      />
-      <Portal>
-        <Modal
-          visible={isModalOpen}
-          dismissable={false}
-          contentContainerStyle={{ backgroundColor: 'white', marginHorizontal: 10, borderRadius: 10 }}>
-          {!productToEdit ?
-            <AddProduct
-              dismissModal={() => setIsModalOpen(false)} /> :
-            <EditProduct
-              product={productToEdit}
-              dismissModal={() => {
-                setIsModalOpen(false);
-                setProductToEdit(null);
-              }} />}
-        </Modal>
-      </Portal>
-    </Surface>
+        onPress={() => setIsModalOpen(true)} />
+    </>
   );
 }
