@@ -1,5 +1,5 @@
 {
-  "name": "StoreMaestro",
+  "name": "storemaestro",
   "version": "0.0.1",
   "private": true,
   "scripts": {
@@ -13,6 +13,7 @@
     "postversion": "react-native-version"
   },
   "dependencies": {
+    "@react-native-firebase/app": "^21.6.2",
     "@react-native-vector-icons/common": "^11.0.0",
     "@react-native-vector-icons/material-design-icons": "^7.4.47",
     "@react-navigation/bottom-tabs": "^7.2.0",
