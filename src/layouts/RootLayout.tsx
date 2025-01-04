@@ -1,3 +1,4 @@
+import React from 'react';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { HomeScreen, ProductsScreen, SalesScreen, SettingsScreen } from '../screens';
 
