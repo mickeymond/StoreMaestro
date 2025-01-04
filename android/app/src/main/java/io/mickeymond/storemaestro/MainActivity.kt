@@ -1,4 +1,4 @@
-package com.storemaestro
+package io.mickeymond.storemaestro
 
 import android.os.Bundle;
 import com.facebook.react.ReactActivity
