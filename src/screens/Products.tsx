@@ -2,12 +2,14 @@ import React, { useEffect, useState } from 'react';
 import { FlatList } from 'react-native';
 import { Avatar, Button, Card, FAB, Modal, Portal, Searchbar, Surface } from 'react-native-paper';
 import firestore from '@react-native-firebase/firestore';
-import { AddProduct, EditProduct, Empty } from '../components';
+import { AddProduct, EditProduct } from '../components';
 import { PRODUCTS_COLLECTION } from '../core/constants';
 import { useDebounce } from 'use-debounce';
 import { Product } from '../core/types';
+import { useUser } from '../hooks/user';
 
 export function ProductsScreen() {
+  const { user } = useUser();
   const [products, setProducts] = useState<Product[]>([]);
   const [query, setQuery] = useState('');
   const [debouncedQuery] = useDebounce(query, 1000);
@@ -42,7 +44,6 @@ export function ProductsScreen() {
           value={query} />
         <FlatList
           data={products}
-          ListEmptyComponent={<Empty />}
           style={{ flexGrow: 1, flex: 1, marginBottom: 60 }}
           renderItem={({ item }) => (
             <Card style={{ margin: 10 }}>
@@ -54,7 +55,7 @@ export function ProductsScreen() {
                     {...props}
                     source={{ uri: `https://avatar.iran.liara.run/username?username=${item.name}` }} />
                 )}
-                right={props => (
+                right={props => user?.role === 'owner' && (
                   <Button
                     {...props}
                     onPress={() => {
@@ -82,10 +83,10 @@ export function ProductsScreen() {
           </Modal>
         </Portal>
       </Surface>
-      <FAB
+      {user?.role === 'owner' && <FAB
         icon="plus"
         style={{ position: 'absolute', bottom: 10, right: 10 }}
-        onPress={() => setIsModalOpen(true)} />
+        onPress={() => setIsModalOpen(true)} />}
     </>
   );
 }

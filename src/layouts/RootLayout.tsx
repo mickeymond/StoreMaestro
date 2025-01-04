@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import auth from '@react-native-firebase/auth';
+import auth, { FirebaseAuthTypes } from '@react-native-firebase/auth';
 import { HomeScreen, ProductsScreen, SalesScreen, SettingsScreen } from '../screens';
 import { StackActions, useNavigation } from '@react-navigation/native';
 
@@ -10,7 +10,7 @@ export function RootLayout() {
   const navigation = useNavigation();
 
   // Handle user state changes
-  function onAuthStateChanged(user: any) {
+  function onAuthStateChanged(user: FirebaseAuthTypes.User | null) {
     // console.log(user);
     if (!user) {
       navigation.dispatch(StackActions.replace("Login"));

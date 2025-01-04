@@ -10,3 +10,11 @@ export type Sale = {
   price: string;
   quantity: string
 }
+
+export type User = {
+  id: string;
+  userId: string;
+  name: string;
+  email: string;
+  role: string;
+}

@@ -2,7 +2,7 @@ import React, { useCallback, useEffect, useState } from 'react';
 import { FlatList, View } from 'react-native';
 import { Button, Card, Dialog, FAB, Modal, Portal, Surface, Text } from 'react-native-paper';
 import firestore from '@react-native-firebase/firestore';
-import { AddSale, Empty } from '../components';
+import { AddSale } from '../components';
 import { PRODUCTS_COLLECTION, SALES_COLLECTION } from '../core/constants';
 import { Sale } from '../core/types';
 import { DatePickerModal } from 'react-native-paper-dates';
@@ -72,7 +72,6 @@ export function SalesScreen() {
         </Surface>
         <FlatList
           data={sales}
-          ListEmptyComponent={<Empty />}
           style={{ flexGrow: 1, flex: 1, marginBottom: 60 }}
           renderItem={({ item }) => (
             <Card style={{ margin: 10 }}>

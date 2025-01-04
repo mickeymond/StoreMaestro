@@ -2,7 +2,7 @@ import { StackActions, useNavigation } from '@react-navigation/native';
 import React, { useEffect, useState } from 'react';
 import { View } from 'react-native';
 import { Button, Surface, Text, TextInput } from 'react-native-paper';
-import auth from '@react-native-firebase/auth';
+import auth, { FirebaseAuthTypes } from '@react-native-firebase/auth';
 
 export function LoginScreen() {
   const navigation = useNavigation();
@@ -28,7 +28,7 @@ export function LoginScreen() {
   }
 
   // Handle user state changes
-  function onAuthStateChanged(user: any) {
+  function onAuthStateChanged(user: FirebaseAuthTypes.User | null) {
     // console.log(user);
     if (user) {
       navigation.dispatch(StackActions.replace("Root"));
@@ -73,7 +73,7 @@ export function LoginScreen() {
           loading={loading}
           mode="contained">LOG IN</Button>
         <Button
-          onPress={() => navigation.dispatch(StackActions.push("Register"))}
+          onPress={() => navigation.dispatch(StackActions.replace("Register"))}
         >New to StoreMaestro? Create An Account.</Button>
       </View>
     </Surface>
