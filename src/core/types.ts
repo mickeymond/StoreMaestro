@@ -3,3 +3,10 @@ export type Product = {
   name: string;
   price: string;
 }
+
+export type Sale = {
+  id: string;
+  productId: string;
+  price: string;
+  quantity: number
+}

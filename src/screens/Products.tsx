@@ -21,7 +21,7 @@ export function ProductsScreen() {
       .where('name', '<=', debouncedQuery + '~')
       .onSnapshot(documentSnapshot => {
         const products = documentSnapshot.docs.map(doc => {
-          return { id: doc.id, name: doc.data().name, price: doc.data().price }
+          return { id: doc.id, name: doc.data().name, price: doc.data().price };
         });
         setProducts(products);
       });
