@@ -27,7 +27,7 @@ export function AddSale({ dismissModal }: {
       });
   };
 
-  const fetchProducts = (query: string = '') => {
+  useEffect(() => {
     firestore()
       .collection(PRODUCTS_COLLECTION)
       .get()
@@ -37,9 +37,7 @@ export function AddSale({ dismissModal }: {
         });
         setProducts(products);
       });
-  }
-
-  useEffect(fetchProducts, []);
+  }, []);
 
   return (
     <Card>
@@ -56,7 +54,7 @@ export function AddSale({ dismissModal }: {
           onSelect={value => {
             if (value) {
               setProductId(value);
-              setPrice(products.find(({ id }) => id === value)?.price || '0')
+              setPrice(products.find(({ id }) => id === value)?.price || '0');
             }
           }}
         />

@@ -2,8 +2,8 @@ import React, { useCallback, useEffect, useState } from 'react';
 import { FlatList, View } from 'react-native';
 import { Button, Card, Dialog, FAB, Modal, Portal, Surface, Text } from 'react-native-paper';
 import firestore from '@react-native-firebase/firestore';
-import { AddSale } from '../components';
-import { SALES_COLLECTION } from '../core/constants';
+import { AddSale, Empty } from '../components';
+import { PRODUCTS_COLLECTION, SALES_COLLECTION } from '../core/constants';
 import { Sale } from '../core/types';
 import { DatePickerModal } from 'react-native-paper-dates';
 import { endOfDay, startOfDay } from 'date-fns';
@@ -64,32 +64,35 @@ export function SalesScreen() {
         <Card style={{ marginVertical: 10 }}>
           <Card.Content style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-around' }}>
             <Text>Total Sales:</Text>
-            <Text style={{ fontWeight: 'bold' }}>GHS 28,000.00</Text>
+            <Text
+              style={{ fontWeight: 'bold' }}
+            >GHS {sales.reduce((prev, next) => prev + parseInt(next.quantity) * parseFloat(next.price), 0).toLocaleString()}</Text>
           </Card.Content>
         </Card>
       </Surface>
       <FlatList
         data={sales}
+        ListEmptyComponent={<Empty />}
         renderItem={({ item }) => (
           <Card style={{ margin: 10 }}>
             <Card.Title
-              title={item.productId}
+              title={<ProductName id={item.productId} />}
               subtitle={(
                 <View style={{ display: 'flex', flexDirection: 'row' }}>
                   <Text style={{ fontWeight: 'bold' }}>{item.quantity}</Text>
                   <Text> sold @ </Text>
                   <Text style={{ fontWeight: 'bold' }}>GHS {item.price}</Text>
                 </View>
-              )} />
-            <Card.Actions>
-              <Button
-                mode="outlined"
-                textColor="red"
-                style={{ borderColor: 'red' }}
-                onPress={() => {
-                  setSaleToDelete(item);
-                }}>Delete</Button>
-            </Card.Actions>
+              )}
+              right={props => (
+                <Button
+                  {...props}
+                  textColor="red"
+                  onPress={() => {
+                    setSaleToDelete(item);
+                  }}>Delete</Button>
+              )}
+            />
           </Card>
         )}
         keyExtractor={item => item.id}
@@ -120,4 +123,20 @@ export function SalesScreen() {
       </Portal>
     </Surface>
   );
+}
+
+function ProductName({ id }: { id: string }) {
+  const [name, setName] = useState('Loading...');
+
+  useEffect(() => {
+    firestore()
+      .collection(PRODUCTS_COLLECTION)
+      .doc(id)
+      .get()
+      .then(snapshot => {
+        setName(snapshot.data()?.name);
+      });
+  }, [id]);
+
+  return <Text>{name}</Text>;
 }
