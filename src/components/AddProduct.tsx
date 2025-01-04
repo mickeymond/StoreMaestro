@@ -21,12 +21,12 @@ export function AddProduct({ dismissModal }: {
       .catch(error => {
         console.log(error);
       });
-  }
+  };
 
   return (
     <Card>
       <Card.Title
-        titleStyle={{ fontWeight: "bold", textAlign: "center", fontSize: 18, marginTop: 30 }}
+        titleStyle={{ fontWeight: 'bold', textAlign: 'center', fontSize: 18, marginTop: 30 }}
         title="Add New Product" />
       <Card.Content>
         <TextInput

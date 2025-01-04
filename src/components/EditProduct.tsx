@@ -24,12 +24,12 @@ export function EditProduct({ product, dismissModal }: {
       .catch(error => {
         console.log(error);
       });
-  }
+  };
 
   return (
     <Card>
       <Card.Title
-        titleStyle={{ fontWeight: "bold", textAlign: "center", fontSize: 18, marginTop: 30 }}
+        titleStyle={{ fontWeight: 'bold', textAlign: 'center', fontSize: 18, marginTop: 30 }}
         title={`Edit - ${product.name}`} />
       <Card.Content>
         <TextInput
