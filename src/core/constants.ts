@@ -1,2 +1,2 @@
-export const PRODUCTS_COLLECTION = 'Products';
-export const SALES_COLLECTION = 'Sales';
+export const PRODUCTS_COLLECTION = 'products';
+export const SALES_COLLECTION = 'sales';
