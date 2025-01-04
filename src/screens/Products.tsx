@@ -1,32 +1,18 @@
 import React, { useEffect, useState } from 'react';
 import { FlatList } from 'react-native';
-import { Avatar, Button, Card, FAB, Modal, Searchbar, Surface } from 'react-native-paper';
+import { Avatar, Button, Card, FAB, Modal, Portal, Searchbar, Surface } from 'react-native-paper';
 import firestore from '@react-native-firebase/firestore';
-import { AddProduct } from '../components';
+import { AddProduct, EditProduct } from '../components';
 import { PRODUCTS_COLLECTION } from '../core/constants';
 import { useDebounce } from 'use-debounce';
-
-const PRODUCTS = [
-  { id: '1', name: 'Bel Aqua Medium (750ml)', price: 30.00 },
-  { id: '2', name: 'Bel Aqua Small (500ml)', price: 25.00 },
-  { id: '3', name: 'Awake Medium (750ml)', price: 28.00 },
-  { id: '4', name: 'Awake Small (500ml)', price: 25.00 },
-  { id: '5', name: 'Awake Small (500ml)', price: 25.00 },
-  { id: '6', name: 'Awake Small (500ml)', price: 25.00 },
-  { id: '7', name: 'Awake Small (500ml)', price: 25.00 },
-];
-
-type Product = {
-  id: string;
-  name: string;
-  price: string;
-}
+import { Product } from '../core/types';
 
 export function ProductsScreen() {
   const [products, setProducts] = useState<Product[]>([]);
   const [query, setQuery] = useState('');
   const [debouncedQuery] = useDebounce(query, 1000);
-  const [addingProduct, setAddingProduct] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [productToEdit, setProductToEdit] = useState<Product | null>(null);
 
   useEffect(() => {
     const subscriber = firestore()
@@ -67,8 +53,12 @@ export function ProductsScreen() {
               />}
             />
             <Card.Actions>
-              <Button>Edit</Button>
-              <Button>Delete</Button>
+              <Button
+                onPress={() => {
+                  setProductToEdit(item);
+                  setIsModalOpen(true);
+                }}>Edit</Button>
+              {/* <Button>Delete</Button> */}
             </Card.Actions>
           </Card>
         )}
@@ -77,15 +67,24 @@ export function ProductsScreen() {
       <FAB
         icon="plus"
         style={{ position: 'absolute', bottom: 10, right: 10 }}
-        onPress={() => setAddingProduct(true)}
+        onPress={() => setIsModalOpen(true)}
       />
-      <Modal
-        visible={addingProduct}
-        dismissable={false}
-        onDismiss={() => setAddingProduct(false)}
-        contentContainerStyle={{ backgroundColor: 'white', marginHorizontal: 10, borderRadius: 10 }}>
-        <AddProduct dismissModal={() => setAddingProduct(false)} />
-      </Modal>
+      <Portal>
+        <Modal
+          visible={isModalOpen}
+          dismissable={false}
+          contentContainerStyle={{ backgroundColor: 'white', marginHorizontal: 10, borderRadius: 10 }}>
+          {!productToEdit ?
+            <AddProduct
+              dismissModal={() => setIsModalOpen(false)} /> :
+            <EditProduct
+              product={productToEdit}
+              dismissModal={() => {
+                setIsModalOpen(false);
+                setProductToEdit(null);
+              }} />}
+        </Modal>
+      </Portal>
     </Surface>
   );
 }
