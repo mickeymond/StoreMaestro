@@ -10,7 +10,9 @@ export function SettingsScreen() {
     setLoading(true);
     auth()
       .signOut()
-      .then(() => console.log('User signed out!'))
+      .then(() => {
+        // console.log('User signed out!');
+      })
       .finally(() => setLoading(false));
   }
 

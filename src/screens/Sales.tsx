@@ -6,7 +6,7 @@ import { AddSale } from '../components';
 import { PRODUCTS_COLLECTION, SALES_COLLECTION } from '../core/constants';
 import { Sale } from '../core/types';
 import { DatePickerModal } from 'react-native-paper-dates';
-import { endOfDay, startOfDay } from 'date-fns';
+import { endOfDay, isToday, startOfDay } from 'date-fns';
 
 
 export function SalesScreen() {
@@ -15,6 +15,20 @@ export function SalesScreen() {
   const [saleToDelete, setSaleToDelete] = useState<Sale | null>(null);
   const [date, setDate] = useState(new Date());
   const [isDatePickerOpen, setIsDatePickerOpen] = useState(false);
+
+  const deleteSale = () => {
+    // console.log('Submitting product!');
+    firestore()
+      .collection(SALES_COLLECTION)
+      .doc(saleToDelete?.id)
+      .delete()
+      .then(() => {
+        setSaleToDelete(null);
+      })
+      .catch(error => {
+        console.log(error);
+      });
+  };
 
   const onDismissSingle = useCallback(() => {
     setIsDatePickerOpen(false);
@@ -35,7 +49,8 @@ export function SalesScreen() {
       .where('createdAt', '<=', endOfDay(date))
       .onSnapshot(documentSnapshot => {
         const sales = documentSnapshot.docs.map(doc => {
-          return { id: doc.id, productId: doc.data().productId, price: doc.data().price, quantity: doc.data().quantity };
+          const { productId, price, quantity, createdAt } = doc.data();
+          return { id: doc.id, productId, price, quantity, createdAt };
         });
         setSales(sales);
       });
@@ -82,9 +97,11 @@ export function SalesScreen() {
                     <Text style={{ fontWeight: 'bold' }}>{item.quantity}</Text>
                     <Text> sold @ </Text>
                     <Text style={{ fontWeight: 'bold' }}>GHS {item.price}</Text>
+                    <Text> = </Text>
+                    <Text style={{ fontWeight: 'bold' }}>GHS {(parseFloat(item.price) * parseInt(item.quantity)).toLocaleString()}</Text>
                   </View>
                 )}
-                right={props => (
+                right={props => isToday(item.createdAt) && (
                   <Button
                     {...props}
                     textColor="red"
@@ -103,7 +120,7 @@ export function SalesScreen() {
             </Dialog.Content>
             <Dialog.Actions>
               <Button onPress={() => setSaleToDelete(null)}>No</Button>
-              <Button onPress={() => setSaleToDelete(null)}>Yes</Button>
+              <Button onPress={deleteSale}>Yes</Button>
             </Dialog.Actions>
           </Dialog>
           <Modal

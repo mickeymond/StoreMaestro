@@ -9,6 +9,7 @@ export type Sale = {
   productId: string;
   price: string;
   quantity: string
+  createdAt: string
 }
 
 export type User = {

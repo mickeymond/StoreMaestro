@@ -14,12 +14,12 @@ export function AddSale({ dismissModal }: {
   const [quantity, setQuantity] = useState('');
 
   const submit = () => {
-    console.log('Submitting sale!');
+    // console.log('Submitting sale!');
     firestore()
       .collection(SALES_COLLECTION)
       .add({ productId, price, quantity, createdAt: new Date(), updatedAt: new Date() })
       .then(() => {
-        console.log('Sale added!');
+        // console.log('Sale added!');
         dismissModal();
       })
       .catch(error => {
