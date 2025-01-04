@@ -1,11 +1,28 @@
-import React from 'react';
-import { GestureResponderEvent } from 'react-native';
+import React, { useState } from 'react';
 import { Button, Card, TextInput } from 'react-native-paper';
-
+import firestore from '@react-native-firebase/firestore';
+import { PRODUCTS_COLLECTION } from '../core/constants';
 
 export function AddProduct({ dismissModal }: {
-  dismissModal: ((e: GestureResponderEvent) => void) | undefined
+  dismissModal: Function
 }) {
+  const [name, setName] = useState('');
+  const [price, setPrice] = useState('');
+
+  const submit = () => {
+    // console.log('Submitting product!');
+    firestore()
+      .collection(PRODUCTS_COLLECTION)
+      .add({ name, price })
+      .then(() => {
+        // console.log('Product added!');
+        dismissModal();
+      })
+      .catch(error => {
+        console.log(error);
+      });
+  }
+
   return (
     <Card>
       <Card.Title
@@ -16,20 +33,20 @@ export function AddProduct({ dismissModal }: {
           style={{ marginVertical: 15 }}
           label="Product Name"
           mode="outlined"
-        // value={text}
-        // onChangeText={text => setText(text)}
+          value={name}
+          onChangeText={text => setName(text)}
         />
         <TextInput
           style={{ marginVertical: 15 }}
           label="Product Price"
           mode="outlined"
-        // value={text}
-        // onChangeText={text => setText(text)}
+          value={price}
+          onChangeText={text => setPrice(text)}
         />
       </Card.Content>
       <Card.Actions>
-        <Button onPress={dismissModal}>Cancel</Button>
-        <Button>Save</Button>
+        <Button onPress={() => dismissModal()}>Cancel</Button>
+        <Button onPress={submit} disabled={!name || !price}>Submit</Button>
       </Card.Actions>
     </Card>
   );
