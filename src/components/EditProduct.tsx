@@ -16,7 +16,7 @@ export function EditProduct({ product, dismissModal }: {
     firestore()
       .collection(PRODUCTS_COLLECTION)
       .doc(product.id)
-      .update({ name, price })
+      .update({ name, price, updatedAt: new Date() })
       .then(() => {
         // console.log('Product added!');
         dismissModal();

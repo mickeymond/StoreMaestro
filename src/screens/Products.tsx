@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { FlatList } from 'react-native';
 import { Avatar, Button, Card, FAB, Modal, Portal, Searchbar, Surface } from 'react-native-paper';
 import firestore from '@react-native-firebase/firestore';
-import { AddProduct, EditProduct } from '../components';
+import { AddProduct, EditProduct, Empty } from '../components';
 import { PRODUCTS_COLLECTION } from '../core/constants';
 import { useDebounce } from 'use-debounce';
 import { Product } from '../core/types';
@@ -42,24 +42,27 @@ export function ProductsScreen() {
       />
       <FlatList
         data={products}
+        ListEmptyComponent={<Empty />}
         renderItem={({ item }) => (
           <Card style={{ margin: 10 }}>
             <Card.Title
               title={item.name}
               subtitle={`GHS ${item.price}`}
-              left={(props) => <Avatar.Image
-                {...props}
-                source={{ uri: `https://avatar.iran.liara.run/username?username=${item.name}` }}
-              />}
+              left={(props) => (
+                <Avatar.Image
+                  {...props}
+                  source={{ uri: `https://avatar.iran.liara.run/username?username=${item.name}` }}
+                />
+              )}
+              right={props => (
+                <Button
+                  {...props}
+                  onPress={() => {
+                    setProductToEdit(item);
+                    setIsModalOpen(true);
+                  }}>Update</Button>
+              )}
             />
-            <Card.Actions>
-              <Button
-                onPress={() => {
-                  setProductToEdit(item);
-                  setIsModalOpen(true);
-                }}>Edit</Button>
-              {/* <Button>Delete</Button> */}
-            </Card.Actions>
           </Card>
         )}
         keyExtractor={item => item.id}
