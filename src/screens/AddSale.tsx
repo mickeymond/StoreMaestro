@@ -67,19 +67,6 @@ export function AddSale() {
             return <Picker.Item key={id} label={name} value={id} />
           })}
         </Picker>
-        {/* <Dropdown
-          label="Product"
-          mode="outlined"
-          placeholder="Select Product"
-          options={products.map(({ id, name }) => ({ label: name, value: id }))}
-          value={productId}
-          onSelect={value => {
-            if (value) {
-              setProductId(value);
-              setPrice(products.find(({ id }) => id === value)?.price || '0');
-            }
-          }}
-        /> */}
       </View>
       <TextInput
         style={{ marginVertical: 15 }}
