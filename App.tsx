@@ -11,9 +11,10 @@ import { PaperProvider } from 'react-native-paper';
 import { GoogleSignin } from '@react-native-google-signin/google-signin';
 import crashlytics from '@react-native-firebase/crashlytics';
 import { RootLayout } from './src/layouts';
-import { AddProduct, AddSale, LoginScreen, RegisterScreen } from './src/screens';
+import { AddProduct, AddSale, EditProduct, LoginScreen, RegisterScreen } from './src/screens';
+import { AppStackParamList } from './src/core/types';
 
-const Stack = createNativeStackNavigator();
+const AppStack = createNativeStackNavigator<AppStackParamList>();
 
 function App(): React.JSX.Element {
   crashlytics().log('App mounted.');
@@ -27,13 +28,14 @@ function App(): React.JSX.Element {
   return (
     <PaperProvider>
       <NavigationContainer>
-        <Stack.Navigator screenOptions={{ headerShown: false }}>
-          <Stack.Screen name="Root" component={RootLayout} />
-          <Stack.Screen name="Login" component={LoginScreen} />
-          <Stack.Screen name="Register" component={RegisterScreen} />
-          <Stack.Screen name="AddProduct" component={AddProduct} />
-          <Stack.Screen name="AddSale" component={AddSale} />
-        </Stack.Navigator>
+        <AppStack.Navigator screenOptions={{ headerShown: false }}>
+          <AppStack.Screen name="Root" component={RootLayout} />
+          <AppStack.Screen name="Login" component={LoginScreen} />
+          <AppStack.Screen name="Register" component={RegisterScreen} />
+          <AppStack.Screen name="AddProduct" component={AddProduct} />
+          <AppStack.Screen name="EditProduct" component={EditProduct} />
+          <AppStack.Screen name="AddSale" component={AddSale} />
+        </AppStack.Navigator>
       </NavigationContainer>
     </PaperProvider>
   );

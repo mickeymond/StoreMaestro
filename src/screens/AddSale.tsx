@@ -64,7 +64,7 @@ export function AddSale() {
           }}>
           {/* <Picker.Item key="default" label="Select A Product" value="" /> */}
           {products.map(({ name, id }) => {
-            return <Picker.Item key={id} label={name} value={id} />
+            return <Picker.Item key={id} label={name} value={id} />;
           })}
         </Picker>
       </View>

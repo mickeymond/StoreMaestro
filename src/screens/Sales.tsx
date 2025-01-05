@@ -1,13 +1,13 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { FlatList, View } from 'react-native';
-import { Button, Card, Dialog, FAB, Portal, Surface, Text } from 'react-native-paper';
+import { Button, Card, Dialog, FAB, IconButton, MD2Colors, Portal, Surface, Text } from 'react-native-paper';
 import firestore from '@react-native-firebase/firestore';
 import { PRODUCTS_COLLECTION, SALES_COLLECTION } from '../core/constants';
 import { Sale } from '../core/types';
-import { DatePickerModal } from 'react-native-paper-dates';
 import { differenceInDays, endOfDay, startOfDay } from 'date-fns';
 import { StackActions, useNavigation } from '@react-navigation/native';
 import { useUser } from '../hooks/user';
+import DatePicker from 'react-native-date-picker';
 
 
 export function SalesScreen() {
@@ -31,18 +31,6 @@ export function SalesScreen() {
         console.log(error);
       });
   };
-
-  const onDismissSingle = useCallback(() => {
-    setIsDatePickerOpen(false);
-  }, [setIsDatePickerOpen]);
-
-  const onConfirmSingle = useCallback(
-    (params: any) => {
-      setIsDatePickerOpen(false);
-      setDate(params.date);
-    },
-    [setIsDatePickerOpen, setDate]
-  );
 
   useEffect(() => {
     const subscriber = firestore()
@@ -71,13 +59,19 @@ export function SalesScreen() {
             onPress={() => setIsDatePickerOpen(true)}
             uppercase={false}
             mode="outlined">{date.toDateString()}</Button>
-          <DatePickerModal
-            locale="en"
-            mode="single"
-            visible={isDatePickerOpen}
-            onDismiss={onDismissSingle}
+          <DatePicker
+            modal
+            mode="date"
+            open={isDatePickerOpen}
             date={date}
-            onConfirm={onConfirmSingle} />
+            onConfirm={(date) => {
+              setIsDatePickerOpen(false);
+              setDate(date);
+            }}
+            onCancel={() => {
+              setIsDatePickerOpen(false);
+            }}
+          />
           <Card style={{ marginVertical: 10 }}>
             <Card.Content style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-around' }}>
               <Text>Total Sales:</Text>
@@ -104,12 +98,15 @@ export function SalesScreen() {
                   </View>
                 )}
                 right={props => (!differenceInDays(item.createdAt, new Date()) && user?.role === 'attendant') && (
-                  <Button
+                  <IconButton
                     {...props}
-                    textColor="red"
+                    icon="delete"
+                    mode="contained"
+                    iconColor={MD2Colors.redA700}
                     onPress={() => {
                       setSaleToDelete(item);
-                    }}>Delete</Button>
+                    }}
+                  />
                 )} />
             </Card>
           )}

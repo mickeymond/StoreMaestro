@@ -19,3 +19,12 @@ export type User = {
   email: string;
   role: string;
 }
+
+export type AppStackParamList = {
+  Root: undefined;
+  Login: undefined;
+  Register: undefined;
+  AddProduct: undefined;
+  EditProduct: { product: Product | null };
+  AddSale: undefined;
+}
