@@ -13,8 +13,7 @@ export function HomeScreen() {
       <ImageBackground
         source={require('../assets/images/undraw_under-construction_c2y1.png')}
         resizeMode="center"
-        style={{ height: '60%' }}>
-      </ImageBackground>
+        style={{ height: '60%' }} />
     </Surface>
   );
 }
