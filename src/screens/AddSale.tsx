@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import { Button, Surface, Text, TextInput } from 'react-native-paper';
 import firestore from '@react-native-firebase/firestore';
-import { Dropdown } from 'react-native-paper-dropdown';
 import { PRODUCTS_COLLECTION, SALES_COLLECTION } from '../core/constants';
 import { Product } from '../core/types';
 import { View } from 'react-native';
 import { StackActions, useNavigation } from '@react-navigation/native';
+import { Picker } from '@react-native-picker/picker';
 
 export function AddSale() {
   const navigation = useNavigation();
@@ -40,6 +40,10 @@ export function AddSale() {
           return { id: doc.id, name: doc.data().name, price: doc.data().price };
         });
         setProducts(products);
+        if (!snapshot.empty) {
+          setProductId(products[0].id);
+          setPrice(products[0].price);
+        }
       });
   }, []);
 
@@ -52,7 +56,18 @@ export function AddSale() {
         Add New Sale
       </Text>
       <View style={{ marginVertical: 15 }}>
-        <Dropdown
+        <Picker
+          selectedValue={productId}
+          onValueChange={(itemValue) => {
+            setProductId(itemValue);
+            setPrice(products.find(({ id }) => id === itemValue)?.price || '0');
+          }}>
+          {/* <Picker.Item key="default" label="Select A Product" value="" /> */}
+          {products.map(({ name, id }) => {
+            return <Picker.Item key={id} label={name} value={id} />
+          })}
+        </Picker>
+        {/* <Dropdown
           label="Product"
           mode="outlined"
           placeholder="Select Product"
@@ -64,7 +79,7 @@ export function AddSale() {
               setPrice(products.find(({ id }) => id === value)?.price || '0');
             }
           }}
-        />
+        /> */}
       </View>
       <TextInput
         style={{ marginVertical: 15 }}
