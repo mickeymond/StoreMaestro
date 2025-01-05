@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { FlatList } from 'react-native';
-import { Avatar, Button, Card, FAB, IconButton, Searchbar, Surface } from 'react-native-paper';
+import { Avatar, Card, FAB, IconButton, Searchbar, Surface } from 'react-native-paper';
 import firestore from '@react-native-firebase/firestore';
 import { PRODUCTS_COLLECTION } from '../core/constants';
 import { useDebounce } from 'use-debounce';
@@ -57,6 +57,7 @@ export function ProductsScreen() {
                 )}
                 right={props => user?.role === 'owner' && (
                   <IconButton
+                    {...props}
                     icon="update"
                     mode="contained"
                     onPress={() => {

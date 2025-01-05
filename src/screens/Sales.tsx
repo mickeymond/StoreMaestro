@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import { FlatList, View } from 'react-native';
-import { Button, Card, Dialog, FAB, Portal, Surface, Text } from 'react-native-paper';
+import { Button, Card, Dialog, FAB, IconButton, MD2Colors, Portal, Surface, Text } from 'react-native-paper';
 import firestore from '@react-native-firebase/firestore';
 import { PRODUCTS_COLLECTION, SALES_COLLECTION } from '../core/constants';
 import { Sale } from '../core/types';
@@ -104,12 +104,15 @@ export function SalesScreen() {
                   </View>
                 )}
                 right={props => (!differenceInDays(item.createdAt, new Date()) && user?.role === 'attendant') && (
-                  <Button
+                  <IconButton
                     {...props}
-                    textColor="red"
+                    icon="delete"
+                    mode="contained"
+                    iconColor={MD2Colors.redA700}
                     onPress={() => {
                       setSaleToDelete(item);
-                    }}>Delete</Button>
+                    }}
+                  />
                 )} />
             </Card>
           )}

@@ -6,6 +6,6 @@ module.exports = {
     },
   },
   plugins: [
-    ['module:react-native-dotenv']
-  ]
+    ['module:react-native-dotenv'],
+  ],
 };
