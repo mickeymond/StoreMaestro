@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { FlatList, View } from 'react-native';
 import { Button, Card, Dialog, FAB, IconButton, MD2Colors, Portal, Surface, Text } from 'react-native-paper';
 import firestore from '@react-native-firebase/firestore';
@@ -31,18 +31,6 @@ export function SalesScreen() {
         console.log(error);
       });
   };
-
-  const onDismissSingle = useCallback(() => {
-    setIsDatePickerOpen(false);
-  }, [setIsDatePickerOpen]);
-
-  const onConfirmSingle = useCallback(
-    (params: any) => {
-      setIsDatePickerOpen(false);
-      setDate(params.date);
-    },
-    [setIsDatePickerOpen, setDate]
-  );
 
   useEffect(() => {
     const subscriber = firestore()
@@ -77,11 +65,11 @@ export function SalesScreen() {
             open={isDatePickerOpen}
             date={date}
             onConfirm={(date) => {
-              setIsDatePickerOpen(false)
-              setDate(date)
+              setIsDatePickerOpen(false);
+              setDate(date);
             }}
             onCancel={() => {
-              setIsDatePickerOpen(false)
+              setIsDatePickerOpen(false);
             }}
           />
           <Card style={{ marginVertical: 10 }}>
