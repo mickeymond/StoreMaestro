@@ -143,7 +143,7 @@ function ProductName({ id }: { id: string }) {
       .doc(id)
       .get()
       .then(snapshot => {
-        setName(snapshot.data()?.name);
+        setName(`${snapshot.data()?.name} @ GHS ${snapshot.data()?.price}`);
       });
   }, [id]);
 

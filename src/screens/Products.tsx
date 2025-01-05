@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { FlatList } from 'react-native';
-import { Avatar, Card, FAB, IconButton, Searchbar, Surface } from 'react-native-paper';
+import { Card, FAB, Icon, IconButton, Searchbar, Surface } from 'react-native-paper';
 import firestore from '@react-native-firebase/firestore';
 import { PRODUCTS_COLLECTION } from '../core/constants';
 import { useDebounce } from 'use-debounce';
@@ -51,9 +51,9 @@ export function ProductsScreen() {
                 title={item.name}
                 subtitle={`GHS ${item.price}`}
                 left={(props) => (
-                  <Avatar.Image
+                  <Icon
                     {...props}
-                    source={{ uri: `https://avatar.iran.liara.run/username?username=${item.name}` }} />
+                    source="package-variant" />
                 )}
                 right={props => user?.role === 'owner' && (
                   <IconButton
