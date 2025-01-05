@@ -1,8 +1,8 @@
 import { StackActions, useNavigation } from '@react-navigation/native';
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { View } from 'react-native';
 import { Button, Surface, Text, TextInput } from 'react-native-paper';
-import auth, { FirebaseAuthTypes } from '@react-native-firebase/auth';
+import auth from '@react-native-firebase/auth';
 import { onGoogleButtonPress } from '../core/google-auth';
 
 export function LoginScreen() {
@@ -17,6 +17,7 @@ export function LoginScreen() {
       .signInWithEmailAndPassword(email, password)
       .then(() => {
         // console.log('User signed in!');
+        navigation.dispatch(StackActions.replace('Root'));
       })
       .catch(error => {
         if (error.code === 'auth/invalid-email') {
@@ -28,19 +29,6 @@ export function LoginScreen() {
         setLoading(false);
       });
   };
-
-  // Handle user state changes
-  function onAuthStateChanged(user: FirebaseAuthTypes.User | null) {
-    // console.log(user);
-    if (user) {
-      navigation.dispatch(StackActions.replace('Root'));
-    }
-  }
-
-  useEffect(() => {
-    const subscriber = auth().onAuthStateChanged(onAuthStateChanged);
-    return subscriber; // unsubscribe on unmount
-  }, []);
 
   return (
     <Surface
@@ -86,6 +74,7 @@ export function LoginScreen() {
             onGoogleButtonPress()
               .then(() => {
                 // console.log('Signed in with Google!');
+                navigation.dispatch(StackActions.replace('Root'));
               })
               .catch(error => {
                 console.error(error);
