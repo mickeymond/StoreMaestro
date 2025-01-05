@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import { Button, Surface, Text, TextInput } from 'react-native-paper';
 import firestore from '@react-native-firebase/firestore';
-import { Dropdown } from 'react-native-paper-dropdown';
 import { PRODUCTS_COLLECTION, SALES_COLLECTION } from '../core/constants';
 import { Product } from '../core/types';
 import { View } from 'react-native';
 import { StackActions, useNavigation } from '@react-navigation/native';
+import { Picker } from '@react-native-picker/picker';
 
 export function AddSale() {
   const navigation = useNavigation();
@@ -40,30 +40,34 @@ export function AddSale() {
           return { id: doc.id, name: doc.data().name, price: doc.data().price };
         });
         setProducts(products);
+        if (!snapshot.empty) {
+          setProductId(products[0].id);
+          setPrice(products[0].price);
+        }
       });
   }, []);
 
   return (
     <Surface
-      style={{ minHeight: '100%', margin: 10 }}
+      style={{ minHeight: '100%', margin: 10, display: 'flex', flexDirection: 'column', flexGrow: 1 }}
       elevation={0}>
       <Text
         style={{ fontWeight: 'bold', textAlign: 'center', fontSize: 18, marginTop: 30, marginVertical: 15 }}>
         Add New Sale
       </Text>
-      <Dropdown
-        label="Product"
-        mode="outlined"
-        placeholder="Select Product"
-        options={products.map(({ id, name, price }) => ({ label: `${name} - GHS ${price}`, value: id }))}
-        value={productId}
-        onSelect={value => {
-          if (value) {
-            setProductId(value);
-            setPrice(products.find(({ id }) => id === value)?.price || '0');
-          }
-        }}
-      />
+      <View style={{ marginVertical: 15 }}>
+        <Picker
+          selectedValue={productId}
+          onValueChange={(itemValue) => {
+            setProductId(itemValue);
+            setPrice(products.find(({ id }) => id === itemValue)?.price || '0');
+          }}>
+          {/* <Picker.Item key="default" label="Select A Product" value="" /> */}
+          {products.map(({ name, id }) => {
+            return <Picker.Item key={id} label={name} value={id} />
+          })}
+        </Picker>
+      </View>
       <TextInput
         style={{ marginVertical: 15 }}
         label="Price"

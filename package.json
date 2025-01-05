@@ -1,6 +1,6 @@
 {
   "name": "storemaestro",
-  "version": "0.0.5",
+  "version": "0.0.7",
   "private": true,
   "scripts": {
     "android": "react-native run-android",
@@ -15,8 +15,10 @@
   "dependencies": {
     "@react-native-firebase/app": "^21.6.2",
     "@react-native-firebase/auth": "^21.6.2",
+    "@react-native-firebase/crashlytics": "^21.6.2",
     "@react-native-firebase/firestore": "^21.6.2",
     "@react-native-google-signin/google-signin": "^13.1.0",
+    "@react-native-picker/picker": "^2.10.2",
     "@react-navigation/bottom-tabs": "^7.2.0",
     "@react-navigation/native": "^7.0.14",
     "@react-navigation/native-stack": "^7.2.0",
@@ -25,7 +27,6 @@
     "react-native": "0.76.5",
     "react-native-paper": "^5.12.5",
     "react-native-paper-dates": "^0.22.28",
-    "react-native-paper-dropdown": "^2.3.1",
     "react-native-safe-area-context": "^5.0.0",
     "react-native-screens": "^4.4.0",
     "react-native-vector-icons": "^10.2.0",
