@@ -11,7 +11,7 @@ import { PaperProvider } from 'react-native-paper';
 import { GoogleSignin } from '@react-native-google-signin/google-signin';
 import crashlytics from '@react-native-firebase/crashlytics';
 import { RootLayout } from './src/layouts';
-import { AddSale, LoginScreen, RegisterScreen } from './src/screens';
+import { AddProduct, AddSale, LoginScreen, RegisterScreen } from './src/screens';
 
 const Stack = createNativeStackNavigator();
 
@@ -31,6 +31,7 @@ function App(): React.JSX.Element {
           <Stack.Screen name="Root" component={RootLayout} />
           <Stack.Screen name="Login" component={LoginScreen} />
           <Stack.Screen name="Register" component={RegisterScreen} />
+          <Stack.Screen name="AddProduct" component={AddProduct} />
           <Stack.Screen name="AddSale" component={AddSale} />
         </Stack.Navigator>
       </NavigationContainer>
