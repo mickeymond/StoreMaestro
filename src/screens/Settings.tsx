@@ -13,7 +13,7 @@ export function SettingsScreen() {
       .then(() => {
         // console.log('User signed out!');
       })
-      .finally(() => setLoading(false));
+      .catch(() => setLoading(false));
   };
 
   return (

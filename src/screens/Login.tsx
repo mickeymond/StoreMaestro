@@ -3,6 +3,7 @@ import React, { useEffect, useState } from 'react';
 import { View } from 'react-native';
 import { Button, Surface, Text, TextInput } from 'react-native-paper';
 import auth, { FirebaseAuthTypes } from '@react-native-firebase/auth';
+import { onGoogleButtonPress } from '../core/google-auth';
 
 export function LoginScreen() {
   const navigation = useNavigation();
@@ -23,8 +24,9 @@ export function LoginScreen() {
         }
 
         console.error(error);
-      })
-      .finally(() => setLoading(false));
+        // Disable loader
+        setLoading(false);
+      });
   };
 
   // Handle user state changes
@@ -73,8 +75,23 @@ export function LoginScreen() {
           loading={loading}
           mode="contained">LOG IN</Button>
         <Button
+          style={{ marginVertical: 15 }}
           onPress={() => navigation.dispatch(StackActions.replace('Register'))}
         >New to StoreMaestro? Create An Account.</Button>
+        <Button
+          style={{ marginVertical: 15 }}
+          mode="contained"
+          icon="google"
+          onPress={() => {
+            onGoogleButtonPress()
+              .then(() => {
+                // console.log('Signed in with Google!');
+              })
+              .catch(error => {
+                console.error(error);
+              });
+          }}
+        >Login with Google</Button>
       </View>
     </Surface>
   );

@@ -49,7 +49,7 @@ export function AddSale({ dismissModal }: {
           label="Product"
           mode="outlined"
           placeholder="Select Product"
-          options={products.map(({ id, name }) => ({ label: name, value: id }))}
+          options={products.map(({ id, name, price }) => ({ label: `${name} - GHS ${price}`, value: id }))}
           value={productId}
           onSelect={value => {
             if (value) {

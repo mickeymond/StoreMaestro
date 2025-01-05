@@ -5,6 +5,7 @@ import { Button, Surface, Text, TextInput } from 'react-native-paper';
 import auth from '@react-native-firebase/auth';
 import firestore from '@react-native-firebase/firestore';
 import { USERS_COLLECTION } from '../core/constants';
+import { onGoogleButtonPress } from '../core/google-auth';
 
 export function RegisterScreen() {
   const navigation = useNavigation();
@@ -44,8 +45,9 @@ export function RegisterScreen() {
         }
 
         console.error(error);
-      })
-      .finally(() => setLoading(false));
+        // Disable loader
+        setLoading(false);
+      });
   };
 
   return (
@@ -90,8 +92,24 @@ export function RegisterScreen() {
           loading={loading}
           mode="contained">CREATE ACCOUNT</Button>
         <Button
+          style={{ marginVertical: 15 }}
           onPress={() => navigation.dispatch(StackActions.replace('Login'))}
         >Already have an account? Login.</Button>
+        <Button
+          style={{ marginVertical: 15 }}
+          mode="contained"
+          icon="google"
+          onPress={() => {
+            onGoogleButtonPress()
+              .then(() => {
+                // console.log('Signed in with Google!');
+                navigation.dispatch(StackActions.replace('Root'));
+              })
+              .catch(error => {
+                console.error(error);
+              });
+          }}
+        >Register with Google</Button>
       </View>
     </Surface>
   );
