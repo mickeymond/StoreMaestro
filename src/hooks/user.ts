@@ -1,8 +1,8 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState } from 'react';
 import auth, { FirebaseAuthTypes } from '@react-native-firebase/auth';
 import firestore from '@react-native-firebase/firestore';
-import { User } from "../core/types";
-import { USERS_COLLECTION } from "../core/constants";
+import { User } from '../core/types';
+import { USERS_COLLECTION } from '../core/constants';
 
 export function useUser() {
   const [user, setUser] = useState<User | null>(null);
@@ -21,7 +21,7 @@ export function useUser() {
             const { userId, name, email, role } = querySnapshot.docs[0].data();
             setUser({ id: querySnapshot.docs[0].id, userId, name, email, role });
           }
-        })
+        });
     }
   }
 
@@ -30,5 +30,5 @@ export function useUser() {
     return subscriber; // unsubscribe on unmount
   }, []);
 
-  return { user }
+  return { user };
 }

@@ -32,7 +32,7 @@ export function RegisterScreen() {
           });
       })
       .then(() => {
-        navigation.dispatch(StackActions.replace("Root"));
+        navigation.dispatch(StackActions.replace('Root'));
       })
       .catch(error => {
         if (error.code === 'auth/email-already-in-use') {
@@ -46,7 +46,7 @@ export function RegisterScreen() {
         console.error(error);
       })
       .finally(() => setLoading(false));
-  }
+  };
 
   return (
     <Surface
@@ -90,7 +90,7 @@ export function RegisterScreen() {
           loading={loading}
           mode="contained">CREATE ACCOUNT</Button>
         <Button
-          onPress={() => navigation.dispatch(StackActions.replace("Login"))}
+          onPress={() => navigation.dispatch(StackActions.replace('Login'))}
         >Already have an account? Login.</Button>
       </View>
     </Surface>

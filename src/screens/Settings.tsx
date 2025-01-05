@@ -14,7 +14,7 @@ export function SettingsScreen() {
         // console.log('User signed out!');
       })
       .finally(() => setLoading(false));
-  }
+  };
 
   return (
     <Surface

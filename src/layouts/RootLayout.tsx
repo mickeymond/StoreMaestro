@@ -13,7 +13,7 @@ export function RootLayout() {
   function onAuthStateChanged(user: FirebaseAuthTypes.User | null) {
     // console.log(user);
     if (!user) {
-      navigation.dispatch(StackActions.replace("Login"));
+      navigation.dispatch(StackActions.replace('Login'));
     }
   }
 

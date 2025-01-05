@@ -25,13 +25,13 @@ export function LoginScreen() {
         console.error(error);
       })
       .finally(() => setLoading(false));
-  }
+  };
 
   // Handle user state changes
   function onAuthStateChanged(user: FirebaseAuthTypes.User | null) {
     // console.log(user);
     if (user) {
-      navigation.dispatch(StackActions.replace("Root"));
+      navigation.dispatch(StackActions.replace('Root'));
     }
   }
 
@@ -73,7 +73,7 @@ export function LoginScreen() {
           loading={loading}
           mode="contained">LOG IN</Button>
         <Button
-          onPress={() => navigation.dispatch(StackActions.replace("Register"))}
+          onPress={() => navigation.dispatch(StackActions.replace('Register'))}
         >New to StoreMaestro? Create An Account.</Button>
       </View>
     </Surface>
