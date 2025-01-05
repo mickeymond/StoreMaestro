@@ -9,4 +9,13 @@ export type Sale = {
   productId: string;
   price: string;
   quantity: string
+  createdAt: string
+}
+
+export type User = {
+  id: string;
+  userId: string;
+  name: string;
+  email: string;
+  role: string;
 }
