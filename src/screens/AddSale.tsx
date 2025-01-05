@@ -45,25 +45,27 @@ export function AddSale() {
 
   return (
     <Surface
-      style={{ minHeight: '100%', margin: 10 }}
+      style={{ minHeight: '100%', margin: 10, display: 'flex', flexDirection: 'column', flexGrow: 1 }}
       elevation={0}>
       <Text
         style={{ fontWeight: 'bold', textAlign: 'center', fontSize: 18, marginTop: 30, marginVertical: 15 }}>
         Add New Sale
       </Text>
-      <Dropdown
-        label="Product"
-        mode="outlined"
-        placeholder="Select Product"
-        options={products.map(({ id, name, price }) => ({ label: `${name} - GHS ${price}`, value: id }))}
-        value={productId}
-        onSelect={value => {
-          if (value) {
-            setProductId(value);
-            setPrice(products.find(({ id }) => id === value)?.price || '0');
-          }
-        }}
-      />
+      <View style={{ marginVertical: 15 }}>
+        <Dropdown
+          label="Product"
+          mode="outlined"
+          placeholder="Select Product"
+          options={products.map(({ id, name }) => ({ label: name, value: id }))}
+          value={productId}
+          onSelect={value => {
+            if (value) {
+              setProductId(value);
+              setPrice(products.find(({ id }) => id === value)?.price || '0');
+            }
+          }}
+        />
+      </View>
       <TextInput
         style={{ marginVertical: 15 }}
         label="Price"
