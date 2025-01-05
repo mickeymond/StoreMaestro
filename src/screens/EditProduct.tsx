@@ -2,24 +2,25 @@ import React, { useState } from 'react';
 import { Button, Surface, Text, TextInput } from 'react-native-paper';
 import firestore from '@react-native-firebase/firestore';
 import { PRODUCTS_COLLECTION } from '../core/constants';
-import { Product } from '../core/types';
+import { AppStackParamList } from '../core/types';
 import { View } from 'react-native';
-import { RouteProp, StackActions, useNavigation } from '@react-navigation/native';
+import { StackActions, useNavigation } from '@react-navigation/native';
+import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
-export function EditProduct({ route }: {
-  route: RouteProp<{ params: { product: Product } }, 'params'>
-}) {
+interface EditProductProps extends NativeStackScreenProps<AppStackParamList, 'EditProduct'> { }
+
+export function EditProduct({ route }: EditProductProps) {
   const { product } = route.params;
   const navigation = useNavigation();
   const [loading, setLoading] = useState(false);
-  const [name, setName] = useState(product.name);
-  const [price, setPrice] = useState(product.price);
+  const [name, setName] = useState(product?.name);
+  const [price, setPrice] = useState(product?.price);
 
   const submit = () => {
     setLoading(true);
     firestore()
       .collection(PRODUCTS_COLLECTION)
-      .doc(product.id)
+      .doc(product?.id)
       .update({ name, price, updatedAt: new Date() })
       .then(() => {
         // console.log('Product added!');
@@ -36,7 +37,7 @@ export function EditProduct({ route }: {
       elevation={0}>
       <Text
         style={{ fontWeight: 'bold', textAlign: 'center', fontSize: 18, marginTop: 30, marginVertical: 15 }}>
-        Edit - {product.name}
+        Edit - {product?.name}
       </Text>
       <TextInput
         style={{ marginVertical: 15 }}

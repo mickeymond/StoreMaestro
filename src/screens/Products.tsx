@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { FlatList } from 'react-native';
-import { Avatar, Button, Card, FAB, Searchbar, Surface } from 'react-native-paper';
+import { Avatar, Button, Card, FAB, IconButton, Searchbar, Surface } from 'react-native-paper';
 import firestore from '@react-native-firebase/firestore';
 import { PRODUCTS_COLLECTION } from '../core/constants';
 import { useDebounce } from 'use-debounce';
@@ -56,18 +56,20 @@ export function ProductsScreen() {
                     source={{ uri: `https://avatar.iran.liara.run/username?username=${item.name}` }} />
                 )}
                 right={props => user?.role === 'owner' && (
-                  <Button
-                    {...props}
+                  <IconButton
+                    icon="update"
+                    mode="contained"
                     onPress={() => {
-                      // Navigate to Edit Product Screen
-                    }}>Update</Button>
+                      navigation.dispatch(StackActions.push('EditProduct', { product: item }));
+                    }}
+                  />
                 )} />
             </Card>
           )}
           keyExtractor={item => item.id} />
       </Surface>
       {user?.role === 'owner' && <FAB
-        icon="plus"
+        icon="plus-thick"
         style={{ position: 'absolute', bottom: 10, right: 10 }}
         onPress={() => {
           navigation.dispatch(StackActions.push('AddProduct'));
