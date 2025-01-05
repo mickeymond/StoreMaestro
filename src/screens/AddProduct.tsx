@@ -39,6 +39,7 @@ export function AddProduct() {
         style={{ marginVertical: 15 }}
         label="Product Name"
         mode="outlined"
+        autoCapitalize="words"
         value={name}
         onChangeText={text => setName(text)}
       />
@@ -46,6 +47,7 @@ export function AddProduct() {
         style={{ marginVertical: 15 }}
         label="Product Price"
         mode="outlined"
+        inputMode="decimal"
         value={price}
         onChangeText={text => setPrice(text)}
       />

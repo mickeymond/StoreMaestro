@@ -1,20 +1,19 @@
 import React, { useEffect, useState } from 'react';
-import { FlatList, View } from 'react-native';
-import { Avatar, Button, Card, FAB, Modal, Portal, Searchbar, Surface } from 'react-native-paper';
+import { FlatList } from 'react-native';
+import { Avatar, Button, Card, FAB, Searchbar, Surface } from 'react-native-paper';
 import firestore from '@react-native-firebase/firestore';
-import { AddProduct, EditProduct } from '../components';
 import { PRODUCTS_COLLECTION } from '../core/constants';
 import { useDebounce } from 'use-debounce';
 import { Product } from '../core/types';
 import { useUser } from '../hooks/user';
+import { StackActions, useNavigation } from '@react-navigation/native';
 
 export function ProductsScreen() {
+  const navigation = useNavigation();
   const { user } = useUser();
   const [products, setProducts] = useState<Product[]>([]);
   const [query, setQuery] = useState('');
   const [debouncedQuery] = useDebounce(query, 1000);
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [productToEdit, setProductToEdit] = useState<Product | null>(null);
 
   useEffect(() => {
     const subscriber = firestore()
@@ -41,6 +40,7 @@ export function ProductsScreen() {
           style={{ margin: 10 }}
           placeholder="Enter a product name to search for it!"
           onChangeText={setQuery}
+          autoCapitalize="words"
           value={query} />
         <FlatList
           data={products}
@@ -59,34 +59,19 @@ export function ProductsScreen() {
                   <Button
                     {...props}
                     onPress={() => {
-                      setProductToEdit(item);
-                      setIsModalOpen(true);
+                      // Navigate to Edit Product Screen
                     }}>Update</Button>
                 )} />
             </Card>
           )}
           keyExtractor={item => item.id} />
       </Surface>
-      <Portal>
-        <Modal
-          visible={isModalOpen}
-          dismissable={false}
-          contentContainerStyle={{ backgroundColor: 'white', marginHorizontal: 10, borderRadius: 10 }}>
-          {!productToEdit ?
-            <AddProduct
-              dismissModal={() => setIsModalOpen(false)} /> :
-            <EditProduct
-              product={productToEdit}
-              dismissModal={() => {
-                setIsModalOpen(false);
-                setProductToEdit(null);
-              }} />}
-        </Modal>
-      </Portal>
       {user?.role === 'owner' && <FAB
         icon="plus"
         style={{ position: 'absolute', bottom: 10, right: 10 }}
-        onPress={() => setIsModalOpen(true)} />}
+        onPress={() => {
+          navigation.dispatch(StackActions.push('AddProduct'));
+        }} />}
     </>
   );
 }

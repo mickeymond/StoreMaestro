@@ -72,6 +72,7 @@ export function AddSale() {
         style={{ marginVertical: 15 }}
         label="Price"
         mode="outlined"
+        inputMode="decimal"
         value={price}
         onChangeText={setPrice}
       />
