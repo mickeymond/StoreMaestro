@@ -10,7 +10,7 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { PaperProvider } from 'react-native-paper';
 import { GoogleSignin } from '@react-native-google-signin/google-signin';
 import { RootLayout } from './src/layouts';
-import { LoginScreen, RegisterScreen } from './src/screens';
+import { AddSale, LoginScreen, RegisterScreen } from './src/screens';
 
 const Stack = createNativeStackNavigator();
 
@@ -29,6 +29,7 @@ function App(): React.JSX.Element {
           <Stack.Screen name="Root" component={RootLayout} />
           <Stack.Screen name="Login" component={LoginScreen} />
           <Stack.Screen name="Register" component={RegisterScreen} />
+          <Stack.Screen name="AddSale" component={AddSale} />
         </Stack.Navigator>
       </NavigationContainer>
     </PaperProvider>

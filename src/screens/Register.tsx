@@ -27,7 +27,7 @@ export function RegisterScreen() {
             userId: userCredential.user.uid,
             name,
             email,
-            role: 'attendant',
+            role: 'user',
             createdAt: new Date(),
             updatedAt: new Date(),
           });

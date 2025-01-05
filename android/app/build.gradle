@@ -90,8 +90,8 @@ android {
         applicationId "io.mickeymond.storemaestro"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 4
-        versionName "0.0.4"
+        versionCode 5
+        versionName "0.0.5"
     }
     signingConfigs {
         debug {

@@ -1,17 +1,19 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import { FlatList, View } from 'react-native';
-import { Button, Card, Dialog, FAB, Modal, Portal, Surface, Text } from 'react-native-paper';
+import { Button, Card, Dialog, FAB, Portal, Surface, Text } from 'react-native-paper';
 import firestore from '@react-native-firebase/firestore';
-import { AddSale } from '../components';
 import { PRODUCTS_COLLECTION, SALES_COLLECTION } from '../core/constants';
 import { Sale } from '../core/types';
 import { DatePickerModal } from 'react-native-paper-dates';
-import { endOfDay, isToday, startOfDay } from 'date-fns';
+import { differenceInDays, endOfDay, startOfDay } from 'date-fns';
+import { StackActions, useNavigation } from '@react-navigation/native';
+import { useUser } from '../hooks/user';
 
 
 export function SalesScreen() {
+  const navigation = useNavigation();
+  const { user } = useUser();
   const [sales, setSales] = useState<Sale[]>([]);
-  const [isModalOpen, setIsModalOpen] = useState(false);
   const [saleToDelete, setSaleToDelete] = useState<Sale | null>(null);
   const [date, setDate] = useState(new Date());
   const [isDatePickerOpen, setIsDatePickerOpen] = useState(false);
@@ -101,7 +103,7 @@ export function SalesScreen() {
                     <Text style={{ fontWeight: 'bold' }}>GHS {(parseFloat(item.price) * parseInt(item.quantity)).toLocaleString()}</Text>
                   </View>
                 )}
-                right={props => isToday(item.createdAt) && (
+                right={props => (!differenceInDays(item.createdAt, new Date()) && user?.role === 'attendant') && (
                   <Button
                     {...props}
                     textColor="red"
@@ -112,30 +114,25 @@ export function SalesScreen() {
             </Card>
           )}
           keyExtractor={item => item.id} />
-        <Portal>
-          <Dialog visible={!!saleToDelete} dismissable={false}>
-            <Dialog.Title>Confirm!</Dialog.Title>
-            <Dialog.Content>
-              <Text variant="bodyMedium">Are you sure you want to delete sale?</Text>
-            </Dialog.Content>
-            <Dialog.Actions>
-              <Button onPress={() => setSaleToDelete(null)}>No</Button>
-              <Button onPress={deleteSale}>Yes</Button>
-            </Dialog.Actions>
-          </Dialog>
-          <Modal
-            visible={isModalOpen}
-            dismissable={false}
-            contentContainerStyle={{ backgroundColor: 'white', marginHorizontal: 10, borderRadius: 10 }}>
-            <AddSale
-              dismissModal={() => setIsModalOpen(false)} />
-          </Modal>
-        </Portal>
       </Surface>
-      <FAB
+      <Portal>
+        <Dialog visible={!!saleToDelete} dismissable={false}>
+          <Dialog.Title>Confirm!</Dialog.Title>
+          <Dialog.Content>
+            <Text variant="bodyMedium">Are you sure you want to delete sale?</Text>
+          </Dialog.Content>
+          <Dialog.Actions>
+            <Button onPress={() => setSaleToDelete(null)}>No</Button>
+            <Button onPress={deleteSale}>Yes</Button>
+          </Dialog.Actions>
+        </Dialog>
+      </Portal>
+      {user?.role === 'attendant' && <FAB
         icon="plus"
         style={{ position: 'absolute', bottom: 10, right: 10 }}
-        onPress={() => setIsModalOpen(true)} />
+        onPress={() => {
+          navigation.dispatch(StackActions.push('AddSale'));
+        }} />}
     </>
   );
 }

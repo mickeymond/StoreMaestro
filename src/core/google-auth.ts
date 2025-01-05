@@ -28,13 +28,14 @@ export async function onGoogleButtonPress() {
     .where('userId', '==', userCredential.user.uid)
     .get();
   if (userQuerySnapshot.empty) {
+    // Create user record for account
     await firestore()
       .collection(USERS_COLLECTION)
       .add({
         userId: userCredential.user.uid,
         name: `${signInResult.data?.user.givenName} ${signInResult.data?.user.familyName}`,
         email: signInResult.data?.user.email,
-        role: 'attendant',
+        role: 'user',
         createdAt: new Date(),
         updatedAt: new Date(),
       });

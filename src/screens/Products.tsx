@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { FlatList } from 'react-native';
+import { FlatList, View } from 'react-native';
 import { Avatar, Button, Card, FAB, Modal, Portal, Searchbar, Surface } from 'react-native-paper';
 import firestore from '@react-native-firebase/firestore';
 import { AddProduct, EditProduct } from '../components';
@@ -66,23 +66,23 @@ export function ProductsScreen() {
             </Card>
           )}
           keyExtractor={item => item.id} />
-        <Portal>
-          <Modal
-            visible={isModalOpen}
-            dismissable={false}
-            contentContainerStyle={{ backgroundColor: 'white', marginHorizontal: 10, borderRadius: 10 }}>
-            {!productToEdit ?
-              <AddProduct
-                dismissModal={() => setIsModalOpen(false)} /> :
-              <EditProduct
-                product={productToEdit}
-                dismissModal={() => {
-                  setIsModalOpen(false);
-                  setProductToEdit(null);
-                }} />}
-          </Modal>
-        </Portal>
       </Surface>
+      <Portal>
+        <Modal
+          visible={isModalOpen}
+          dismissable={false}
+          contentContainerStyle={{ backgroundColor: 'white', marginHorizontal: 10, borderRadius: 10 }}>
+          {!productToEdit ?
+            <AddProduct
+              dismissModal={() => setIsModalOpen(false)} /> :
+            <EditProduct
+              product={productToEdit}
+              dismissModal={() => {
+                setIsModalOpen(false);
+                setProductToEdit(null);
+              }} />}
+        </Modal>
+      </Portal>
       {user?.role === 'owner' && <FAB
         icon="plus"
         style={{ position: 'absolute', bottom: 10, right: 10 }}
