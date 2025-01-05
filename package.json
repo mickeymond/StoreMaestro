@@ -1,6 +1,6 @@
 {
   "name": "storemaestro",
-  "version": "0.0.5",
+  "version": "0.0.6",
   "private": true,
   "scripts": {
     "android": "react-native run-android",
@@ -15,6 +15,7 @@
   "dependencies": {
     "@react-native-firebase/app": "^21.6.2",
     "@react-native-firebase/auth": "^21.6.2",
+    "@react-native-firebase/crashlytics": "^21.6.2",
     "@react-native-firebase/firestore": "^21.6.2",
     "@react-native-google-signin/google-signin": "^13.1.0",
     "@react-navigation/bottom-tabs": "^7.2.0",
