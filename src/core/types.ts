@@ -12,6 +12,12 @@ export type Sale = {
   createdAt: string
 }
 
+export type SaleSummery = {
+  productId: string;
+  totalQuantity: number;
+  totalAmount: number;
+}
+
 export type User = {
   id: string;
   userId: string;
@@ -26,5 +32,6 @@ export type AppStackParamList = {
   Register: undefined;
   AddProduct: undefined;
   EditProduct: { product: Product | null };
+  SalesSummary: { salesSummary: SaleSummery[] };
   AddSale: undefined;
 }
