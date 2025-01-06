@@ -34,6 +34,7 @@ export function AddSale() {
   useEffect(() => {
     firestore()
       .collection(PRODUCTS_COLLECTION)
+      .orderBy('name', 'asc')
       .get()
       .then(snapshot => {
         const products = snapshot.docs.map(doc => {
@@ -63,8 +64,8 @@ export function AddSale() {
             setPrice(products.find(({ id }) => id === itemValue)?.price || '0');
           }}>
           {/* <Picker.Item key="default" label="Select A Product" value="" /> */}
-          {products.map(({ name, id }) => {
-            return <Picker.Item key={id} label={name} value={id} />;
+          {products.map(({ name, id, price }) => {
+            return <Picker.Item key={id} label={`${name} @ GHS ${price}`} value={id} />;
           })}
         </Picker>
       </View>

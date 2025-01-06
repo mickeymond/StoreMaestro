@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { FlatList } from 'react-native';
-import { Avatar, Card, FAB, IconButton, Searchbar, Surface } from 'react-native-paper';
+import { Card, FAB, Icon, IconButton, Searchbar, Surface } from 'react-native-paper';
 import firestore from '@react-native-firebase/firestore';
 import { PRODUCTS_COLLECTION } from '../core/constants';
 import { useDebounce } from 'use-debounce';
@@ -20,6 +20,7 @@ export function ProductsScreen() {
       .collection(PRODUCTS_COLLECTION)
       .where('name', '>=', debouncedQuery)
       .where('name', '<=', debouncedQuery + '~')
+      .orderBy('name', 'asc')
       .onSnapshot(documentSnapshot => {
         const products = documentSnapshot.docs.map(doc => {
           return { id: doc.id, name: doc.data().name, price: doc.data().price };
@@ -51,9 +52,9 @@ export function ProductsScreen() {
                 title={item.name}
                 subtitle={`GHS ${item.price}`}
                 left={(props) => (
-                  <Avatar.Image
+                  <Icon
                     {...props}
-                    source={{ uri: `https://avatar.iran.liara.run/username?username=${item.name}` }} />
+                    source="package-variant" />
                 )}
                 right={props => user?.role === 'owner' && (
                   <IconButton
