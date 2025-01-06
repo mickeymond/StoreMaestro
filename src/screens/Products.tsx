@@ -20,6 +20,7 @@ export function ProductsScreen() {
       .collection(PRODUCTS_COLLECTION)
       .where('name', '>=', debouncedQuery)
       .where('name', '<=', debouncedQuery + '~')
+      .orderBy('name', 'asc')
       .onSnapshot(documentSnapshot => {
         const products = documentSnapshot.docs.map(doc => {
           return { id: doc.id, name: doc.data().name, price: doc.data().price };

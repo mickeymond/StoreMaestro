@@ -34,6 +34,7 @@ export function AddSale() {
   useEffect(() => {
     firestore()
       .collection(PRODUCTS_COLLECTION)
+      .orderBy('name', 'asc')
       .get()
       .then(snapshot => {
         const products = snapshot.docs.map(doc => {
