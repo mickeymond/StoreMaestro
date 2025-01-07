@@ -11,7 +11,7 @@ import { PaperProvider } from 'react-native-paper';
 import { GoogleSignin } from '@react-native-google-signin/google-signin';
 import crashlytics from '@react-native-firebase/crashlytics';
 import { RootLayout } from './src/layouts';
-import { AddProduct, AddSale, EditProduct, LoginScreen, RegisterScreen } from './src/screens';
+import { AddProduct, AddSale, EditProduct, LoginScreen, RegisterScreen, SalesSummary } from './src/screens';
 import { AppStackParamList } from './src/core/types';
 
 const AppStack = createNativeStackNavigator<AppStackParamList>();
@@ -35,6 +35,7 @@ function App(): React.JSX.Element {
           <AppStack.Screen name="AddProduct" component={AddProduct} />
           <AppStack.Screen name="EditProduct" component={EditProduct} />
           <AppStack.Screen name="AddSale" component={AddSale} />
+          <AppStack.Screen name="SalesSummary" component={SalesSummary} />
         </AppStack.Navigator>
       </NavigationContainer>
     </PaperProvider>

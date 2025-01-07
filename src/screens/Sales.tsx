@@ -2,12 +2,14 @@ import React, { useEffect, useState } from 'react';
 import { FlatList, View } from 'react-native';
 import { Button, Card, Dialog, FAB, IconButton, MD2Colors, Portal, Surface, Text } from 'react-native-paper';
 import firestore from '@react-native-firebase/firestore';
-import { PRODUCTS_COLLECTION, SALES_COLLECTION } from '../core/constants';
+import { SALES_COLLECTION } from '../core/constants';
 import { Sale } from '../core/types';
-import { differenceInDays, endOfDay, startOfDay } from 'date-fns';
+import { endOfDay, startOfDay } from 'date-fns';
 import { StackActions, useNavigation } from '@react-navigation/native';
 import { useUser } from '../hooks/user';
 import DatePicker from 'react-native-date-picker';
+import { groupBy } from 'lodash';
+import { ProductName } from '../components';
 
 
 export function SalesScreen() {
@@ -35,8 +37,8 @@ export function SalesScreen() {
   useEffect(() => {
     const subscriber = firestore()
       .collection(SALES_COLLECTION)
-      .where('createdAt', '>=', startOfDay(date))
-      .where('createdAt', '<=', endOfDay(date))
+      .where('createdAt', '>=', startOfDay(date).valueOf())
+      .where('createdAt', '<=', endOfDay(date).valueOf())
       .onSnapshot(documentSnapshot => {
         const sales = documentSnapshot.docs.map(doc => {
           const { productId, price, quantity, createdAt } = doc.data();
@@ -79,6 +81,19 @@ export function SalesScreen() {
                 style={{ fontWeight: 'bold' }}
               >GHS {sales.reduce((prev, next) => prev + parseInt(next.quantity) * parseFloat(next.price), 0).toLocaleString()}</Text>
             </Card.Content>
+            <Card.Actions>
+              <Button onPress={() => {
+                // Compute Summary
+                const groupedSales = groupBy(sales, sale => sale.productId);
+                const salesSummary = [];
+                for (const productId in groupedSales) {
+                  const totalQuantity = groupedSales[productId].reduce((prev, next) => prev + parseInt(next.quantity), 0);
+                  const totalAmount = groupedSales[productId].reduce((prev, next) => prev + (parseInt(next.quantity) * parseInt(next.price)), 0);
+                  salesSummary.push({ productId, totalQuantity, totalAmount });
+                }
+                navigation.dispatch(StackActions.push('SalesSummary', { salesSummary }));
+              }}>View Summary</Button>
+            </Card.Actions>
           </Card>
         </Surface>
         <FlatList
@@ -97,7 +112,7 @@ export function SalesScreen() {
                     <Text style={{ fontWeight: 'bold' }}>GHS {(parseFloat(item.price) * parseInt(item.quantity)).toLocaleString()}</Text>
                   </View>
                 )}
-                right={props => (!differenceInDays(item.createdAt, new Date()) && user?.role === 'attendant') && (
+                right={props => ((item.createdAt > startOfDay(new Date()).valueOf()) && (user?.role === 'attendant')) && (
                   <IconButton
                     {...props}
                     icon="delete"
@@ -132,20 +147,4 @@ export function SalesScreen() {
         }} />}
     </>
   );
-}
-
-function ProductName({ id }: { id: string }) {
-  const [name, setName] = useState('Loading...');
-
-  useEffect(() => {
-    firestore()
-      .collection(PRODUCTS_COLLECTION)
-      .doc(id)
-      .get()
-      .then(snapshot => {
-        setName(`${snapshot.data()?.name} @ GHS ${snapshot.data()?.price}`);
-      });
-  }, [id]);
-
-  return <Text>{name}</Text>;
 }
