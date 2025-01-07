@@ -8,8 +8,8 @@ export type Sale = {
   id: string;
   productId: string;
   price: string;
-  quantity: string
-  createdAt: string
+  quantity: string;
+  createdAt: number;
 }
 
 export type SaleSummery = {

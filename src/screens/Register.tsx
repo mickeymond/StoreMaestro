@@ -28,8 +28,8 @@ export function RegisterScreen() {
             name,
             email,
             role: 'user',
-            createdAt: new Date(),
-            updatedAt: new Date(),
+            createdAt: Date.now(),
+            updatedAt: Date.now(),
           });
       })
       .then(() => {

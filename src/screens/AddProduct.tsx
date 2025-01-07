@@ -15,7 +15,7 @@ export function AddProduct() {
     setLoading(true);
     firestore()
       .collection(PRODUCTS_COLLECTION)
-      .add({ name, price, createdAt: new Date(), updatedAt: new Date() })
+      .add({ name, price, createdAt: Date.now(), updatedAt: Date.now() })
       .then(() => {
         // console.log('Product added!');
         navigation.dispatch(StackActions.pop());

@@ -19,7 +19,7 @@ export function AddSale() {
     setLoading(true);
     firestore()
       .collection(SALES_COLLECTION)
-      .add({ productId, price, quantity, createdAt: new Date(), updatedAt: new Date() })
+      .add({ productId, price, quantity, createdAt: Date.now(), updatedAt: Date.now() })
       .then(() => {
         // console.log('Sale added!');
         navigation.dispatch(StackActions.pop());

@@ -4,7 +4,7 @@ import { Button, Card, Dialog, FAB, IconButton, MD2Colors, Portal, Surface, Text
 import firestore from '@react-native-firebase/firestore';
 import { SALES_COLLECTION } from '../core/constants';
 import { Sale } from '../core/types';
-import { endOfDay, isAfter, startOfDay } from 'date-fns';
+import { endOfDay, startOfDay } from 'date-fns';
 import { StackActions, useNavigation } from '@react-navigation/native';
 import { useUser } from '../hooks/user';
 import DatePicker from 'react-native-date-picker';
@@ -37,8 +37,8 @@ export function SalesScreen() {
   useEffect(() => {
     const subscriber = firestore()
       .collection(SALES_COLLECTION)
-      .where('createdAt', '>=', startOfDay(date))
-      .where('createdAt', '<=', endOfDay(date))
+      .where('createdAt', '>=', startOfDay(date).valueOf())
+      .where('createdAt', '<=', endOfDay(date).valueOf())
       .onSnapshot(documentSnapshot => {
         const sales = documentSnapshot.docs.map(doc => {
           const { productId, price, quantity, createdAt } = doc.data();
@@ -112,7 +112,7 @@ export function SalesScreen() {
                     <Text style={{ fontWeight: 'bold' }}>GHS {(parseFloat(item.price) * parseInt(item.quantity)).toLocaleString()}</Text>
                   </View>
                 )}
-                right={props => (isAfter(new Date(item.createdAt), startOfDay(new Date())) && user?.role === 'attendant') && (
+                right={props => ((item.createdAt > startOfDay(new Date()).valueOf()) && (user?.role === 'attendant')) && (
                   <IconButton
                     {...props}
                     icon="delete"

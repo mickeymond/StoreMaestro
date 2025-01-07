@@ -36,8 +36,8 @@ export async function onGoogleButtonPress() {
         name: `${signInResult.data?.user.givenName} ${signInResult.data?.user.familyName}`,
         email: signInResult.data?.user.email,
         role: 'user',
-        createdAt: new Date(),
-        updatedAt: new Date(),
+        createdAt: Date.now(),
+        updatedAt: Date.now(),
       });
   }
 }
