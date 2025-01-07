@@ -21,7 +21,7 @@ export function EditProduct({ route }: EditProductProps) {
     firestore()
       .collection(PRODUCTS_COLLECTION)
       .doc(product?.id)
-      .update({ name, price, updatedAt: Date.now(), createdAt: Date.now() })
+      .update({ name, price, updatedAt: Date.now() })
       .then(() => {
         // console.log('Product added!');
         navigation.dispatch(StackActions.pop());
