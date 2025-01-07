@@ -4,7 +4,7 @@ import { Button, Card, Dialog, FAB, IconButton, MD2Colors, Portal, Surface, Text
 import firestore from '@react-native-firebase/firestore';
 import { SALES_COLLECTION } from '../core/constants';
 import { Sale } from '../core/types';
-import { differenceInDays, endOfDay, startOfDay } from 'date-fns';
+import { endOfDay, isAfter, startOfDay } from 'date-fns';
 import { StackActions, useNavigation } from '@react-navigation/native';
 import { useUser } from '../hooks/user';
 import DatePicker from 'react-native-date-picker';
@@ -112,7 +112,7 @@ export function SalesScreen() {
                     <Text style={{ fontWeight: 'bold' }}>GHS {(parseFloat(item.price) * parseInt(item.quantity)).toLocaleString()}</Text>
                   </View>
                 )}
-                right={props => (!differenceInDays(item.createdAt, new Date()) && user?.role === 'attendant') && (
+                right={props => (isAfter(new Date(item.createdAt), startOfDay(new Date())) && user?.role === 'attendant') && (
                   <IconButton
                     {...props}
                     icon="delete"
