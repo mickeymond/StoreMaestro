@@ -1,25 +1,31 @@
 import React, { useEffect, useState } from 'react';
 import { Button, Surface, Text, TextInput } from 'react-native-paper';
-import firestore from '@react-native-firebase/firestore';
+import firestore, { FirebaseFirestoreTypes } from '@react-native-firebase/firestore';
 import { PRODUCTS_COLLECTION, SALES_COLLECTION } from '../core/constants';
 import { Product } from '../core/types';
 import { View } from 'react-native';
 import { StackActions, useNavigation } from '@react-navigation/native';
 import { Picker } from '@react-native-picker/picker';
+import { Controller, useForm } from 'react-hook-form';
 
 export function AddSale() {
   const navigation = useNavigation();
   const [loading, setLoading] = useState(false);
   const [products, setProducts] = useState<Product[]>([]);
-  const [productId, setProductId] = useState('');
-  const [price, setPrice] = useState('');
-  const [quantity, setQuantity] = useState('');
+  const {
+    control,
+    handleSubmit,
+    formState: { errors, isValid },
+    setValue,
+  } = useForm({
+    defaultValues: { productId: '', price: '', quantity: '' },
+  });
 
-  const submit = () => {
+  const submit = (data: FirebaseFirestoreTypes.DocumentData) => {
     setLoading(true);
     firestore()
       .collection(SALES_COLLECTION)
-      .add({ productId, price, quantity, createdAt: Date.now(), updatedAt: Date.now() })
+      .add({ ...data, createdAt: Date.now(), updatedAt: Date.now() })
       .then(() => {
         // console.log('Sale added!');
         navigation.dispatch(StackActions.pop());
@@ -42,11 +48,11 @@ export function AddSale() {
         });
         setProducts(products);
         if (!snapshot.empty) {
-          setProductId(products[0].id);
-          setPrice(products[0].price);
+          setValue('productId', products[0].id);
+          setValue('price', products[0].price);
         }
       });
-  }, []);
+  }, [setValue]);
 
   return (
     <Surface
@@ -57,34 +63,60 @@ export function AddSale() {
         Add New Sale
       </Text>
       <View style={{ marginVertical: 15 }}>
-        <Picker
-          selectedValue={productId}
-          onValueChange={(itemValue) => {
-            setProductId(itemValue);
-            setPrice(products.find(({ id }) => id === itemValue)?.price || '0');
-          }}>
-          {/* <Picker.Item key="default" label="Select A Product" value="" /> */}
-          {products.map(({ name, id, price }) => {
-            return <Picker.Item key={id} label={`${name} @ GHS ${price}`} value={id} />;
-          })}
-        </Picker>
+        <Controller
+          control={control}
+          rules={{ required: true }}
+          render={({ field: { onChange, onBlur, value } }) => (
+            <Picker
+              selectedValue={value}
+              onBlur={onBlur}
+              onValueChange={(itemValue) => {
+                onChange(itemValue);
+                setValue('price', products.find(({ id }) => id === itemValue)?.price || '0');
+              }}>
+              {products.map(({ name, id, price }) => {
+                return <Picker.Item key={id} label={`${name} @ GHS ${price}`} value={id} />;
+              })}
+            </Picker>
+          )}
+          name="productId"
+        />
+        {errors.productId && <Text>This is required.</Text>}
       </View>
-      <TextInput
-        style={{ marginVertical: 15 }}
-        label="Price"
-        mode="outlined"
-        inputMode="decimal"
-        value={price}
-        onChangeText={setPrice}
+      <Controller
+        control={control}
+        rules={{ required: true }}
+        render={({ field: { onChange, onBlur, value } }) => (
+          <TextInput
+            style={{ marginVertical: 15 }}
+            label="Price"
+            mode="outlined"
+            inputMode="decimal"
+            onBlur={onBlur}
+            value={value}
+            onChangeText={onChange}
+          />
+        )}
+        name="price"
       />
-      <TextInput
-        style={{ marginVertical: 15 }}
-        label="Quantity"
-        mode="outlined"
-        inputMode="numeric"
-        value={quantity}
-        onChangeText={setQuantity}
+      {errors.price && <Text>This is required.</Text>}
+      <Controller
+        control={control}
+        rules={{ required: true }}
+        render={({ field: { onChange, onBlur, value } }) => (
+          <TextInput
+            style={{ marginVertical: 15 }}
+            label="Quantity"
+            mode="outlined"
+            inputMode="numeric"
+            onBlur={onBlur}
+            value={value}
+            onChangeText={onChange}
+          />
+        )}
+        name="quantity"
       />
+      {errors.quantity && <Text>This is required.</Text>}
       <View
         style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', marginVertical: 15 }}>
         <Button
@@ -97,8 +129,8 @@ export function AddSale() {
         <Button
           style={{ width: '45%' }}
           loading={loading}
-          mode="contained" onPress={submit}
-          disabled={!productId || !price || !quantity}>Submit</Button>
+          mode="contained" onPress={handleSubmit(submit)}
+          disabled={!isValid}>Submit</Button>
       </View>
     </Surface>
   );

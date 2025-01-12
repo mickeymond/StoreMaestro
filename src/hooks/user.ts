@@ -27,7 +27,8 @@ export function useUser() {
 
   useEffect(() => {
     const subscriber = auth().onAuthStateChanged(onAuthStateChanged);
-    return subscriber; // unsubscribe on unmount
+    // Stop listening for updates when no longer required
+    return () => subscriber();
   }, []);
 
   return { user };
