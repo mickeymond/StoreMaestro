@@ -25,6 +25,7 @@
     "date-fns": "^4.1.0",
     "lodash": "^4.17.21",
     "react": "18.3.1",
+    "react-hook-form": "^7.54.2",
     "react-native": "0.76.5",
     "react-native-date-picker": "^5.0.8",
     "react-native-paper": "^5.13.1",
