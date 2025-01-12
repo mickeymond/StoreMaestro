@@ -23,7 +23,8 @@ export function ProductsScreen() {
       .orderBy('name', 'asc')
       .onSnapshot(documentSnapshot => {
         const products = documentSnapshot.docs.map(doc => {
-          return { id: doc.id, name: doc.data().name, price: doc.data().price };
+          const { name, price, altPrice } = doc.data();
+          return { id: doc.id, name, price, altPrice };
         });
         setProducts(products);
       });

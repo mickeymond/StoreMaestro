@@ -2,6 +2,7 @@ export type Product = {
   id: string;
   name: string;
   price: string;
+  altPrice: string;
 }
 
 export type Sale = {

@@ -102,6 +102,7 @@ export function SalesScreen() {
           renderItem={({ item }) => (
             <Card style={{ margin: 10 }}>
               <Card.Title
+                style={{ marginTop: 10 }}
                 title={<ProductName id={item.productId} />}
                 subtitle={(
                   <View style={{ display: 'flex', flexDirection: 'column' }}>
@@ -143,7 +144,7 @@ export function SalesScreen() {
         </Dialog>
       </Portal>
       {user?.role === 'attendant' && <FAB
-        icon="plus"
+        icon="plus-thick"
         style={{ position: 'absolute', bottom: 10, right: 10 }}
         onPress={() => {
           navigation.dispatch(StackActions.push('AddSale'));

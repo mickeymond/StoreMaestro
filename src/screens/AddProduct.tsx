@@ -4,18 +4,24 @@ import firestore from '@react-native-firebase/firestore';
 import { PRODUCTS_COLLECTION } from '../core/constants';
 import { View } from 'react-native';
 import { StackActions, useNavigation } from '@react-navigation/native';
+import { Controller, FieldValues, useForm } from 'react-hook-form';
 
 export function AddProduct() {
   const navigation = useNavigation();
   const [loading, setLoading] = useState(false);
-  const [name, setName] = useState('');
-  const [price, setPrice] = useState('');
+  const {
+    control,
+    handleSubmit,
+    formState: { errors, isValid },
+  } = useForm({
+    defaultValues: { name: '', price: '', altPrice: '' },
+  });
 
-  const submit = () => {
+  const submit = ({ name, price, altPrice }: FieldValues) => {
     setLoading(true);
     firestore()
       .collection(PRODUCTS_COLLECTION)
-      .add({ name, price, createdAt: Date.now(), updatedAt: Date.now() })
+      .add({ name, price, altPrice, createdAt: Date.now(), updatedAt: Date.now() })
       .then(() => {
         // console.log('Product added!');
         navigation.dispatch(StackActions.pop());
@@ -35,22 +41,57 @@ export function AddProduct() {
         style={{ fontWeight: 'bold', textAlign: 'center', fontSize: 18, marginTop: 30, marginVertical: 15 }}>
         Add New Product
       </Text>
-      <TextInput
-        style={{ marginVertical: 15 }}
-        label="Product Name"
-        mode="outlined"
-        autoCapitalize="words"
-        value={name}
-        onChangeText={text => setName(text)}
+      <Controller
+        control={control}
+        rules={{ required: true }}
+        render={({ field: { onChange, onBlur, value } }) => (
+          <TextInput
+            style={{ marginVertical: 15 }}
+            label="Name"
+            mode="outlined"
+            autoCapitalize="words"
+            onBlur={onBlur}
+            value={value}
+            onChangeText={onChange}
+          />
+        )}
+        name="name"
       />
-      <TextInput
-        style={{ marginVertical: 15 }}
-        label="Product Price"
-        mode="outlined"
-        inputMode="decimal"
-        value={price}
-        onChangeText={text => setPrice(text)}
+      {errors.name && <Text>Name is required.</Text>}
+      <Controller
+        control={control}
+        rules={{ required: true }}
+        render={({ field: { onChange, onBlur, value } }) => (
+          <TextInput
+            style={{ marginVertical: 15 }}
+            label="Price"
+            mode="outlined"
+            inputMode="decimal"
+            onBlur={onBlur}
+            value={value}
+            onChangeText={onChange}
+          />
+        )}
+        name="price"
       />
+      {errors.price && <Text>Price is required.</Text>}
+      <Controller
+        control={control}
+        rules={{ required: false }}
+        render={({ field: { onChange, onBlur, value } }) => (
+          <TextInput
+            style={{ marginVertical: 15 }}
+            label="Alt Price"
+            mode="outlined"
+            inputMode="decimal"
+            onBlur={onBlur}
+            value={value}
+            onChangeText={onChange}
+          />
+        )}
+        name="altPrice"
+      />
+      {errors.altPrice && <Text>Alt price is required.</Text>}
       <View
         style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', marginVertical: 15 }}>
         <Button
@@ -63,8 +104,8 @@ export function AddProduct() {
         <Button
           style={{ width: '45%' }}
           loading={loading}
-          mode="contained" onPress={submit}
-          disabled={!name || !price}>Submit</Button>
+          mode="contained" onPress={handleSubmit(submit)}
+          disabled={!isValid}>Submit</Button>
       </View>
     </Surface>
   );

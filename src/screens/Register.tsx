@@ -6,15 +6,20 @@ import auth from '@react-native-firebase/auth';
 import firestore from '@react-native-firebase/firestore';
 import { USERS_COLLECTION } from '../core/constants';
 import { onGoogleButtonPress } from '../core/google-auth';
+import { Controller, FieldValues, useForm } from 'react-hook-form';
 
 export function RegisterScreen() {
   const navigation = useNavigation();
   const [loading, setLoading] = useState(false);
-  const [name, setName] = useState('');
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const {
+    control,
+    handleSubmit,
+    formState: { errors, isValid },
+  } = useForm({
+    defaultValues: { name: '', email: '', password: '' },
+  });
 
-  const register = () => {
+  const register = ({ name, email, password }: FieldValues) => {
     setLoading(true);
     auth()
       .createUserWithEmailAndPassword(email, password)
@@ -58,37 +63,64 @@ export function RegisterScreen() {
         <Text style={{ textAlign: 'center', fontSize: 24 }}>
           Create a StoreMaestro Account
         </Text>
-        <TextInput
-          style={{ marginVertical: 15 }}
-          label="Enter Full Name"
-          mode="outlined"
-          inputMode="text"
-          autoCapitalize="words"
-          value={name}
-          onChangeText={setName}
+        <Controller
+          control={control}
+          rules={{ required: true }}
+          render={({ field: { onChange, onBlur, value } }) => (
+            <TextInput
+              style={{ marginVertical: 15 }}
+              label="Enter Full Name"
+              mode="outlined"
+              inputMode="text"
+              autoCapitalize="words"
+              onBlur={onBlur}
+              value={value}
+              onChangeText={onChange}
+            />
+          )}
+          name="name"
         />
-        <TextInput
-          style={{ marginVertical: 15 }}
-          label="Enter Unique Email"
-          mode="outlined"
-          inputMode="email"
-          autoCapitalize="none"
-          value={email}
-          onChangeText={setEmail}
+        {errors.name && <Text>Name is required.</Text>}
+        <Controller
+          control={control}
+          rules={{ required: true }}
+          render={({ field: { onChange, onBlur, value } }) => (
+            <TextInput
+              style={{ marginVertical: 15 }}
+              label="Enter Unique Email"
+              mode="outlined"
+              inputMode="email"
+              autoCapitalize="none"
+              onBlur={onBlur}
+              value={value}
+              onChangeText={onChange}
+            />
+          )}
+          name="email"
         />
-        <TextInput
-          style={{ marginVertical: 15 }}
-          label="Enter Secure Password"
-          mode="outlined"
-          autoCapitalize="none"
-          secureTextEntry
-          value={password}
-          onChangeText={setPassword}
+        {errors.email && <Text>Email is required.</Text>}
+        <Controller
+          control={control}
+          rules={{ required: true }}
+          render={({ field: { onChange, onBlur, value } }) => (
+            <TextInput
+              style={{ marginVertical: 15 }}
+              label="Enter Secure Password"
+              mode="outlined"
+              autoCapitalize="none"
+              secureTextEntry
+              onBlur={onBlur}
+              value={value}
+              onChangeText={onChange}
+            />
+          )}
+          name="password"
         />
+        {errors.password && <Text>Password is required.</Text>}
         <Button
           style={{ marginVertical: 15 }}
-          disabled={!email || !password}
-          onPress={register}
+          disabled={!isValid}
+          onPress={handleSubmit(register)}
           loading={loading}
           mode="contained">CREATE ACCOUNT</Button>
         <Button
