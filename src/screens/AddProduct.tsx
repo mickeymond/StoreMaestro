@@ -5,23 +5,25 @@ import { PRODUCTS_COLLECTION } from '../core/constants';
 import { View } from 'react-native';
 import { StackActions, useNavigation } from '@react-navigation/native';
 import { Controller, FieldValues, useForm } from 'react-hook-form';
+import DatePicker from 'react-native-date-picker';
 
 export function AddProduct() {
   const navigation = useNavigation();
   const [loading, setLoading] = useState(false);
+  const [isDatePickerOpen, setIsDatePickerOpen] = useState(false);
   const {
     control,
     handleSubmit,
     formState: { errors, isValid },
   } = useForm({
-    defaultValues: { name: '', price: '', altPrice: '' },
+    defaultValues: { name: '', expiry: Date.now(), price: '', altPrice: '' },
   });
 
-  const submit = ({ name, price, altPrice }: FieldValues) => {
+  const submit = ({ name, expiry, price, altPrice }: FieldValues) => {
     setLoading(true);
     firestore()
       .collection(PRODUCTS_COLLECTION)
-      .add({ name, price, altPrice, createdAt: Date.now(), updatedAt: Date.now() })
+      .add({ name, expiry, price, altPrice, createdAt: Date.now(), updatedAt: Date.now() })
       .then(() => {
         // console.log('Product added!');
         navigation.dispatch(StackActions.pop());
@@ -58,6 +60,35 @@ export function AddProduct() {
         name="name"
       />
       {errors.name && <Text>Name is required.</Text>}
+      <Controller
+        control={control}
+        rules={{ required: true }}
+        render={({ field: { onChange, value } }) => (
+          <View
+            style={{ marginVertical: 15 }}>
+            <Text style={{ textAlign: 'center', marginBottom: 5 }}>Select Expiry Date</Text>
+            <Button
+              onPress={() => setIsDatePickerOpen(true)}
+              uppercase={false}
+              mode="outlined">{new Date(value).toDateString()}</Button>
+            <DatePicker
+              modal
+              mode="date"
+              open={isDatePickerOpen}
+              date={new Date(value)}
+              onConfirm={(date) => {
+                setIsDatePickerOpen(false);
+                onChange(date.valueOf());
+              }}
+              onCancel={() => {
+                setIsDatePickerOpen(false);
+              }}
+            />
+          </View>
+        )}
+        name="expiry"
+      />
+      {errors.expiry && <Text>Expiry is required.</Text>}
       <Controller
         control={control}
         rules={{ required: true }}

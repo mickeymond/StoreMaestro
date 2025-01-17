@@ -45,8 +45,8 @@ export function AddSale() {
       .get()
       .then(snapshot => {
         const products = snapshot.docs.map(doc => {
-          const { name, price, altPrice } = doc.data();
-          return { id: doc.id, name, price, altPrice };
+          const { name, expiry, price, altPrice } = doc.data();
+          return { id: doc.id, name, expiry, price, altPrice };
         });
         setProducts(products);
         if (!snapshot.empty) {
