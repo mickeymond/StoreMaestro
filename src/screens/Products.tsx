@@ -1,12 +1,13 @@
 import React, { useEffect, useState } from 'react';
 import { FlatList } from 'react-native';
-import { Card, FAB, Icon, IconButton, Searchbar, Surface } from 'react-native-paper';
+import { Card, FAB, Icon, IconButton, MD2Colors, Searchbar, Surface } from 'react-native-paper';
 import firestore from '@react-native-firebase/firestore';
 import { PRODUCTS_COLLECTION } from '../core/constants';
 import { useDebounce } from 'use-debounce';
 import { Product } from '../core/types';
 import { useUser } from '../hooks/user';
 import { StackActions, useNavigation } from '@react-navigation/native';
+import { differenceInDays } from 'date-fns';
 
 export function ProductsScreen() {
   const navigation = useNavigation();
@@ -23,7 +24,8 @@ export function ProductsScreen() {
       .orderBy('name', 'asc')
       .onSnapshot(documentSnapshot => {
         const products = documentSnapshot.docs.map(doc => {
-          return { id: doc.id, name: doc.data().name, price: doc.data().price };
+          const { name, expiry, price, altPrice } = doc.data();
+          return { id: doc.id, name, expiry, price, altPrice };
         });
         setProducts(products);
       });
@@ -54,6 +56,8 @@ export function ProductsScreen() {
                 left={(props) => (
                   <Icon
                     {...props}
+                    color={differenceInDays(new Date(item.expiry), new Date()) <= 90 ?
+                      MD2Colors.redA700 : MD2Colors.greenA700}
                     source="package-variant" />
                 )}
                 right={props => user?.role === 'owner' && (

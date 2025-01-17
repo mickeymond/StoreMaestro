@@ -1,27 +1,26 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import auth, { FirebaseAuthTypes } from '@react-native-firebase/auth';
 import { HomeScreen, ProductsScreen, SalesScreen, SettingsScreen } from '../screens';
-import { StackActions, useNavigation } from '@react-navigation/native';
-import { Icon } from 'react-native-paper';
+import { ActivityIndicator, Icon } from 'react-native-paper';
+import { useUser } from '../hooks/user';
+import { View } from 'react-native';
 
 const Tab = createBottomTabNavigator();
 
 export function RootLayout() {
-  const navigation = useNavigation();
+  const { user } = useUser();
 
-  // Handle user state changes
-  function onAuthStateChanged(user: FirebaseAuthTypes.User | null) {
-    // console.log(user);
-    if (!user) {
-      navigation.dispatch(StackActions.replace('Login'));
-    }
-  }
-
-  useEffect(() => {
-    const subscriber = auth().onAuthStateChanged(onAuthStateChanged);
-    return subscriber; // unsubscribe on unmount
-  });
+  if (!user) {return (
+    <View style={{
+      minHeight: '100%',
+      display: 'flex',
+      flexDirection: 'column',
+      justifyContent: 'center',
+      alignItems: 'center',
+    }}>
+      <ActivityIndicator size="large" />
+    </View>
+  );}
 
   return (
     <Tab.Navigator

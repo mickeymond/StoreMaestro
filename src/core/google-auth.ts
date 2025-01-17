@@ -26,6 +26,7 @@ export async function onGoogleButtonPress() {
   const userQuerySnapshot = await firestore()
     .collection(USERS_COLLECTION)
     .where('userId', '==', userCredential.user.uid)
+    .limit(1)
     .get();
   if (userQuerySnapshot.empty) {
     // Create user record for account

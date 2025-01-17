@@ -1,21 +1,28 @@
 import React, { useEffect, useState } from 'react';
-import { Button, Surface, Text, TextInput } from 'react-native-paper';
+import { Button, Divider, RadioButton, Surface, Text, TextInput } from 'react-native-paper';
 import firestore from '@react-native-firebase/firestore';
 import { PRODUCTS_COLLECTION, SALES_COLLECTION } from '../core/constants';
 import { Product } from '../core/types';
 import { View } from 'react-native';
 import { StackActions, useNavigation } from '@react-navigation/native';
 import { Picker } from '@react-native-picker/picker';
+import { Controller, FieldValues, useForm } from 'react-hook-form';
 
 export function AddSale() {
   const navigation = useNavigation();
   const [loading, setLoading] = useState(false);
   const [products, setProducts] = useState<Product[]>([]);
-  const [productId, setProductId] = useState('');
-  const [price, setPrice] = useState('');
-  const [quantity, setQuantity] = useState('');
+  const [prices, setPrices] = useState<string[]>([]);
+  const {
+    control,
+    handleSubmit,
+    formState: { errors, isValid },
+    setValue,
+  } = useForm({
+    defaultValues: { productId: '', price: '', quantity: '' },
+  });
 
-  const submit = () => {
+  const submit = ({ productId, price, quantity }: FieldValues) => {
     setLoading(true);
     firestore()
       .collection(SALES_COLLECTION)
@@ -38,15 +45,18 @@ export function AddSale() {
       .get()
       .then(snapshot => {
         const products = snapshot.docs.map(doc => {
-          return { id: doc.id, name: doc.data().name, price: doc.data().price };
+          const { name, expiry, price, altPrice } = doc.data();
+          return { id: doc.id, name, expiry, price, altPrice };
         });
         setProducts(products);
         if (!snapshot.empty) {
-          setProductId(products[0].id);
-          setPrice(products[0].price);
+          const { id, price, altPrice } = products[0];
+          setValue('productId', id);
+          setValue('price', price);
+          setPrices([...new Set([price, altPrice || price])]);
         }
       });
-  }, []);
+  }, [setValue]);
 
   return (
     <Surface
@@ -57,34 +67,73 @@ export function AddSale() {
         Add New Sale
       </Text>
       <View style={{ marginVertical: 15 }}>
-        <Picker
-          selectedValue={productId}
-          onValueChange={(itemValue) => {
-            setProductId(itemValue);
-            setPrice(products.find(({ id }) => id === itemValue)?.price || '0');
-          }}>
-          {/* <Picker.Item key="default" label="Select A Product" value="" /> */}
-          {products.map(({ name, id, price }) => {
-            return <Picker.Item key={id} label={`${name} @ GHS ${price}`} value={id} />;
-          })}
-        </Picker>
+        <Controller
+          control={control}
+          rules={{ required: true }}
+          render={({ field: { onChange, onBlur, value } }) => (
+            <Picker
+              selectedValue={value}
+              onBlur={onBlur}
+              onValueChange={(itemValue) => {
+                onChange(itemValue);
+                const product = products.find(({ id }) => id === itemValue);
+                if (product) {
+                  const { price, altPrice } = product;
+                  setValue('price', price);
+                  setPrices([...new Set([price, altPrice || price])]);
+                } else {
+                  setValue('price', '');
+                  setPrices([]);
+                }
+              }}>
+              {products.map(({ name, id, price }) => {
+                return <Picker.Item key={id} label={`${name} @ GHS ${price}`} value={id} />;
+              })}
+            </Picker>
+          )}
+          name="productId"
+        />
+        {errors.productId && <Text>This is required.</Text>}
       </View>
-      <TextInput
-        style={{ marginVertical: 15 }}
-        label="Price"
-        mode="outlined"
-        inputMode="decimal"
-        value={price}
-        onChangeText={setPrice}
+      <Divider />
+      <View style={{ marginVertical: 15 }}>
+        <Controller
+          control={control}
+          rules={{ required: true }}
+          render={({ field: { onChange, value } }) => (
+            <RadioButton.Group
+              onValueChange={onChange}
+              value={value}>
+              {prices.map((price, i) => (
+                <RadioButton.Item
+                  key={i}
+                  label={`${i == 1 ? 'Alternate Price' : 'Normal Price'} (GHS ${price})`}
+                  value={price} />
+              ))}
+            </RadioButton.Group>
+          )}
+          name="price"
+        />
+        {errors.price && <Text>Sale price is required.</Text>}
+      </View>
+      <Divider />
+      <Controller
+        control={control}
+        rules={{ required: true }}
+        render={({ field: { onChange, onBlur, value } }) => (
+          <TextInput
+            style={{ marginVertical: 15 }}
+            label="Sale Quantity"
+            mode="outlined"
+            inputMode="numeric"
+            onBlur={onBlur}
+            value={value}
+            onChangeText={onChange}
+          />
+        )}
+        name="quantity"
       />
-      <TextInput
-        style={{ marginVertical: 15 }}
-        label="Quantity"
-        mode="outlined"
-        inputMode="numeric"
-        value={quantity}
-        onChangeText={setQuantity}
-      />
+      {errors.quantity && <Text>Sale quantity is required.</Text>}
       <View
         style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', marginVertical: 15 }}>
         <Button
@@ -97,8 +146,8 @@ export function AddSale() {
         <Button
           style={{ width: '45%' }}
           loading={loading}
-          mode="contained" onPress={submit}
-          disabled={!productId || !price || !quantity}>Submit</Button>
+          mode="contained" onPress={handleSubmit(submit)}
+          disabled={!isValid}>Submit</Button>
       </View>
     </Surface>
   );

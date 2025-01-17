@@ -4,14 +4,20 @@ import { View } from 'react-native';
 import { Button, Surface, Text, TextInput } from 'react-native-paper';
 import auth from '@react-native-firebase/auth';
 import { onGoogleButtonPress } from '../core/google-auth';
+import { Controller, FieldValues, useForm } from 'react-hook-form';
 
 export function LoginScreen() {
   const navigation = useNavigation();
   const [loading, setLoading] = useState(false);
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const {
+    control,
+    handleSubmit,
+    formState: { errors, isValid },
+  } = useForm({
+    defaultValues: { email: '', password: '' },
+  });
 
-  const login = () => {
+  const login = ({ email, password }: FieldValues) => {
     setLoading(true);
     auth()
       .signInWithEmailAndPassword(email, password)
@@ -38,28 +44,46 @@ export function LoginScreen() {
         <Text style={{ textAlign: 'center', fontSize: 24 }}>
           Welcome back to StoreMaestro
         </Text>
-        <TextInput
-          style={{ marginVertical: 15 }}
-          label="Enter Unique Email"
-          mode="outlined"
-          inputMode="email"
-          autoCapitalize="none"
-          value={email}
-          onChangeText={setEmail}
+        <Controller
+          control={control}
+          rules={{ required: true }}
+          render={({ field: { onChange, onBlur, value } }) => (
+            <TextInput
+              style={{ marginVertical: 15 }}
+              label="Enter Unique Email"
+              mode="outlined"
+              inputMode="email"
+              autoCapitalize="none"
+              onBlur={onBlur}
+              value={value}
+              onChangeText={onChange}
+            />
+          )}
+          name="email"
         />
-        <TextInput
-          style={{ marginVertical: 15 }}
-          label="Enter Secure Password"
-          mode="outlined"
-          autoCapitalize="none"
-          secureTextEntry
-          value={password}
-          onChangeText={setPassword}
+        {errors.email && <Text>Email is required.</Text>}
+        <Controller
+          control={control}
+          rules={{ required: true }}
+          render={({ field: { onChange, onBlur, value } }) => (
+            <TextInput
+              style={{ marginVertical: 15 }}
+              label="Enter Secure Password"
+              mode="outlined"
+              autoCapitalize="none"
+              secureTextEntry
+              onBlur={onBlur}
+              value={value}
+              onChangeText={onChange}
+            />
+          )}
+          name="password"
         />
+        {errors.password && <Text>Password is required.</Text>}
         <Button
           style={{ marginVertical: 15 }}
-          disabled={!email || !password}
-          onPress={login}
+          disabled={!isValid}
+          onPress={handleSubmit(login)}
           loading={loading}
           mode="contained">LOG IN</Button>
         <Button

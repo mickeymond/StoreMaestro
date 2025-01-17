@@ -102,14 +102,18 @@ export function SalesScreen() {
           renderItem={({ item }) => (
             <Card style={{ margin: 10 }}>
               <Card.Title
+                style={{ marginTop: 10 }}
                 title={<ProductName id={item.productId} />}
                 subtitle={(
-                  <View style={{ display: 'flex', flexDirection: 'row' }}>
-                    <Text style={{ fontWeight: 'bold' }}>{item.quantity}</Text>
-                    <Text> sold @ </Text>
-                    <Text style={{ fontWeight: 'bold' }}>GHS {item.price}</Text>
-                    <Text> = </Text>
-                    <Text style={{ fontWeight: 'bold' }}>GHS {(parseFloat(item.price) * parseInt(item.quantity)).toLocaleString()}</Text>
+                  <View style={{ display: 'flex', flexDirection: 'column' }}>
+                    <View style={{ display: 'flex', flexDirection: 'row' }}>
+                      <Text style={{ fontWeight: 'bold' }}>{item.quantity}</Text>
+                      <Text> sold @ </Text>
+                      <Text style={{ fontWeight: 'bold' }}>GHS {item.price}</Text>
+                      <Text> = </Text>
+                      <Text style={{ fontWeight: 'bold' }}>GHS {(parseFloat(item.price) * parseInt(item.quantity)).toLocaleString()}</Text>
+                    </View>
+                    <Text selectable style={{ marginVertical: 10 }}>{item.id}</Text>
                   </View>
                 )}
                 right={props => ((item.createdAt > startOfDay(new Date()).valueOf()) && (user?.role === 'attendant')) && (
@@ -140,7 +144,7 @@ export function SalesScreen() {
         </Dialog>
       </Portal>
       {user?.role === 'attendant' && <FAB
-        icon="plus"
+        icon="plus-thick"
         style={{ position: 'absolute', bottom: 10, right: 10 }}
         onPress={() => {
           navigation.dispatch(StackActions.push('AddSale'));
