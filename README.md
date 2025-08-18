@@ -1,35 +1,107 @@
-This is a new [**React Native**](https://reactnative.dev) project, bootstrapped using [`@react-native-community/cli`](https://github.com/react-native-community/cli).
+# StoreMaestro
 
-# Getting Started
+This is a [**React Native**](https://reactnative.dev) application for managing store inventory and sales. It uses Firebase for backend services, including authentication and database.
 
->**Note**: Make sure you have completed the [React Native - Environment Setup](https://reactnative.dev/docs/environment-setup) instructions till "Creating a new application" step, before proceeding.
+# Getting Started for First-Timers
 
-## Step 1: Start the Metro Server
+This guide will walk you through setting up the project for the first time.
 
-First, you will need to start **Metro**, the JavaScript _bundler_ that ships _with_ React Native.
+## 1. Prerequisites
 
-To start Metro, run the following command from the _root_ of your React Native project:
+Make sure you have completed the [React Native - Environment Setup](https://reactnative.dev/docs/environment-setup) instructions. This includes installing:
+- Node.js (v18 or newer)
+- Watchman (for macOS)
+- JDK (for Android development)
+- Android Studio (for Android development)
+- Xcode (for iOS development)
+
+## 2. Clone and Install Dependencies
+
+First, clone the repository to your local machine and install the necessary npm packages.
 
 ```bash
-# using npm
-npm start
-
-# OR using Yarn
-yarn start
+git clone <repository-url>
+cd storemaestro
+npm install
 ```
 
-## Step 2: Start your Application
+## 3. Firebase Setup
 
-Let Metro Bundler run in its _own_ terminal. Open a _new_ terminal from the _root_ of your React Native project. Run the following command to start your _Android_ or _iOS_ app:
+This project uses Firebase for authentication and database services. You will need to set up a new Firebase project.
+
+1.  **Create a Firebase Project**: Go to the [Firebase Console](https://console.firebase.google.com/) and create a new project.
+
+2.  **Add an Android App**:
+    *   In your Firebase project dashboard, click the Android icon to add a new Android app.
+    *   For the "Android package name", use `io.mickeymond.storemaestro`.
+    *   Download the `google-services.json` file.
+    *   Move the downloaded `google-services.json` file into the `android/app/` directory of this project.
+
+3.  **Add an iOS App**:
+    *   Back in the Firebase project dashboard, click "Add app" and then select the iOS icon.
+    *   For the "Apple bundle ID", use `io.mickeymond.storemaestro`.
+    *   Download the `GoogleService-Info.plist` file.
+    *   Open the `ios/StoreMaestro.xcworkspace` file in Xcode. Drag and drop the downloaded `GoogleService-Info.plist` file into the `StoreMaestro` folder in the Xcode project navigator.
+
+4.  **Enable Firebase Services**:
+    *   In the Firebase Console, navigate to the **Authentication** section and enable the **Google** sign-in provider.
+    *   Navigate to the **Firestore Database** section and create a database. Start in **test mode** for easier setup.
+
+## 4. Google Sign-In Configuration
+
+To enable Google Sign-In, you need to configure the OAuth client ID.
+
+1.  **Get Web Client ID**:
+    *   Go to the [Google Cloud Console](https://console.cloud.google.com/).
+    *   Make sure your Firebase project is selected.
+    *   Navigate to **APIs & Services > Credentials**.
+    *   Find the **OAuth 2.0 Client IDs** section. You should see a "Web client" that was automatically created by Firebase.
+    *   Copy the **Client ID** from the "Web client".
+
+2.  **Create `.env` file**:
+    *   In the root of the project, create a new file named `.env`.
+    *   Add the Web Client ID you copied to the `.env` file like this:
+        ```
+        GOOGLE_OAUTH_CLIENT_ID=your-web-client-id-goes-here
+        ```
+
+3.  **Configure Android Keystore**:
+    *   For Google Sign-In to work on Android, you must add your machine's SHA-1 fingerprint to the Firebase project settings.
+    *   Run the following command in the `android` directory:
+        ```bash
+        cd android
+        ./gradlew signingReport
+        ```
+    *   This will print a list of SHA-1 and SHA-256 fingerprints. Copy the `SHA1` value for the `debug` variant.
+    *   In the Firebase Console, go to **Project Settings > General**. Scroll down to your Android app and click **Add fingerprint**. Paste the SHA-1 key there.
+    *   `cd ..` to return to the project root.
+
+## 5. Final Setup Steps
+
+### For iOS
+
+You need to install the native iOS dependencies using CocoaPods.
+
+```bash
+# From the root of the project
+cd ios
+pod install
+cd ..
+```
+
+### For Android
+
+No additional steps are required.
+
+## 6. Running the Application
+
+You are now ready to run the app!
 
 ### For Android
 
 ```bash
 # using npm
 npm run android
-
-# OR using Yarn
-yarn android
 ```
 
 ### For iOS
@@ -37,43 +109,18 @@ yarn android
 ```bash
 # using npm
 npm run ios
-
-# OR using Yarn
-yarn ios
 ```
 
-If everything is set up _correctly_, you should see your new app running in your _Android Emulator_ or _iOS Simulator_ shortly provided you have set up your emulator/simulator correctly.
-
-This is one way to run your app — you can also run it directly from within Android Studio and Xcode respectively.
-
-## Step 3: Modifying your App
-
-Now that you have successfully run the app, let's modify it.
-
-1. Open `App.tsx` in your text editor of choice and edit some lines.
-2. For **Android**: Press the <kbd>R</kbd> key twice or select **"Reload"** from the **Developer Menu** (<kbd>Ctrl</kbd> + <kbd>M</kbd> (on Window and Linux) or <kbd>Cmd ⌘</kbd> + <kbd>M</kbd> (on macOS)) to see your changes!
-
-   For **iOS**: Hit <kbd>Cmd ⌘</kbd> + <kbd>R</kbd> in your iOS Simulator to reload the app and see your changes!
-
-## Congratulations! :tada:
-
-You've successfully run and modified your React Native App. :partying_face:
-
-### Now what?
-
-- If you want to add this new React Native code to an existing application, check out the [Integration guide](https://reactnative.dev/docs/integration-with-existing-apps).
-- If you're curious to learn more about React Native, check out the [Introduction to React Native](https://reactnative.dev/docs/getting-started).
+If everything is set up correctly, the app should launch in your Android Emulator or iOS Simulator.
 
 # Troubleshooting
 
-If you can't get this to work, see the [Troubleshooting](https://reactnative.dev/docs/troubleshooting) page.
+- **Android: `Execution failed for task ':app:processDebugGoogleServices'`.**
+  This usually means the `google-services.json` file is missing or in the wrong place. Make sure it's in `android/app/`.
 
-# Learn More
+- **iOS: Build fails related to Firebase.**
+  This can happen if the `pod install` step was missed or if the `GoogleService-Info.plist` file is not correctly added to the Xcode project.
 
-To learn more about React Native, take a look at the following resources:
-
-- [React Native Website](https://reactnative.dev) - learn more about React Native.
-- [Getting Started](https://reactnative.dev/docs/environment-setup) - an **overview** of React Native and how setup your environment.
-- [Learn the Basics](https://reactnative.dev/docs/getting-started) - a **guided tour** of the React Native **basics**.
-- [Blog](https://reactnative.dev/blog) - read the latest official React Native **Blog** posts.
-- [`@facebook/react-native`](https://github.com/facebook/react-native) - the Open Source; GitHub **repository** for React Native.
+- **Google Sign-In fails.**
+  - Double-check that the `GOOGLE_OAUTH_CLIENT_ID` in your `.env` file is correct.
+  - For Android, ensure your SHA-1 fingerprint is added to the Firebase project settings.
