@@ -9,7 +9,7 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { PaperProvider } from 'react-native-paper';
 import { GoogleSignin } from '@react-native-google-signin/google-signin';
-import crashlytics from '@react-native-firebase/crashlytics';
+import { getCrashlytics } from '@react-native-firebase/crashlytics';
 import { RootLayout } from './src/layouts';
 import { AddProduct, AddSale, EditProduct, LoginScreen, RegisterScreen, SalesSummary } from './src/screens';
 import { AppStackParamList } from './src/core/types';
@@ -17,7 +17,7 @@ import { AppStackParamList } from './src/core/types';
 const AppStack = createNativeStackNavigator<AppStackParamList>();
 
 function App(): React.JSX.Element {
-  crashlytics().log('App mounted.');
+  getCrashlytics().log('App mounted.');
   // Configure Google Sign In
   useEffect(() => {
     GoogleSignin.configure({
